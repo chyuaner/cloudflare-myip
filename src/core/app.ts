@@ -1,6 +1,8 @@
 import { Hono } from "hono";
 import { type Variables, type Bindings } from "./types.js";
 
+const DEFAULT_TZ = 'Asia/Taipei';
+
 const app = new Hono<{ Bindings: Bindings; Variables: Variables }>();
 
 app.get("/", (c) => {
@@ -33,7 +35,16 @@ app.all(
 });
 
 app.on('ALL', ["/now", '/now/local'], (c) => {
-  const now = new Date().toLocaleString();
+  const localTz = c.var.geo.timezone ?? DEFAULT_TZ;
+  const fmt = new Intl.DateTimeFormat(undefined, {
+    timeZone: localTz,
+    dateStyle: "short",    // 與瀏覽器預設的日期格式相同
+    timeStyle: "medium",   // 與瀏覽器預設的時間格式相同
+  });
+
+  const utcNow = new Date();
+  const now = fmt.format(utcNow);
+  // const now = new Date().toLocaleString();
   return c.text(now);
 });
 
