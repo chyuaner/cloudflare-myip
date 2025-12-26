@@ -1,8 +1,8 @@
 import { serve } from "@hono/node-server";
 import { Hono } from "hono";
-import app from "./app";
-import { type Variables, type Bindings, type GeoData } from "./types";
-import { initGeoIP, lookupIp } from "./services/node-geoip";
+import app from "./core.js";
+import { type Variables, type Bindings, type GeoData } from "./types.js";
+import { initGeoIP, lookupIp } from "./services/node-geoip.js";
 
 // Initialize GeoIP database on startup
 initGeoIP();

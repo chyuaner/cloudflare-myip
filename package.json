@@ -1,5 +1,6 @@
 {
 	"name": "cloudflare-myip",
+	"type": "module",
 	"scripts": {
 		"dev": "wrangler dev",
 		"dev:worker": "wrangler dev --ip 0.0.0.0",
