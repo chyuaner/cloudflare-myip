@@ -3,9 +3,12 @@
 	"type": "module",
 	"scripts": {
 		"dev": "wrangler dev",
+		"dev:worker": "wrangler dev",
+		"dev:vercel": "vercel dev",
+		"start": "tsx src/node.ts",
+		"start:node": "tsx src/node.ts",
 		"deploy": "wrangler deploy --minify",
-		"cf-typegen": "wrangler types --env-interface CloudflareBindings",
-		"start:node": "tsx src/node.ts"
+		"cf-typegen": "wrangler types --env-interface CloudflareBindings"
 	},
 	"dependencies": {
 		"@hono/node-server": "^1.19.7",
