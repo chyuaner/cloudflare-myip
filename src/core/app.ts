@@ -1,5 +1,6 @@
 import { Hono } from "hono";
 import { type Variables, type Bindings } from "./types.js";
+import { formatGMT } from "./helpers.js";
 
 const DEFAULT_TZ = 'Asia/Taipei';
 
@@ -36,19 +37,21 @@ app.all(
 
 app.on('ALL', ["/now", '/now/local'], (c) => {
   const localTz = c.var.geo.timezone ?? DEFAULT_TZ;
-  const fmt = new Intl.DateTimeFormat(undefined, {
-    timeZone: localTz,
-    dateStyle: "short",    // 與瀏覽器預設的日期格式相同
-    timeStyle: "medium",   // 與瀏覽器預設的時間格式相同
-  });
-
   const utcNow = new Date();
-  const now = fmt.format(utcNow);
+
+  // const fmt = new Intl.DateTimeFormat(undefined, {
+  //   timeZone: localTz,
+  //   dateStyle: "short",    // 與瀏覽器預設的日期格式相同
+  //   timeStyle: "medium",   // 與瀏覽器預設的時間格式相同
+  // });
+  // const now = fmt.format(utcNow);
+
+  const now = formatGMT(utcNow, localTz);
   // const now = new Date().toLocaleString();
   return c.text(now);
 });
 
-app.all("/now/utc", (c) => {
+app.on('ALL', ["/utc", '/now/utc'], (c) => {
   const now = new Date().toUTCString();
   return c.text(now);
 });
