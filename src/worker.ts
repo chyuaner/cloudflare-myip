@@ -1,6 +1,6 @@
 import { Hono } from "hono";
-import app from "./core.js";
-import { type Variables, type Bindings, type GeoData } from "./types.js";
+import app from "./core/app.js";
+import { type Variables, type Bindings, type GeoData } from "./core/types.js";
 
 const worker = new Hono<{ Bindings: Bindings; Variables: Variables }>();
 

@@ -7,10 +7,6 @@
 	"name": "cloudflare-myip",
 	"main": "src/worker.ts",
 	"compatibility_date": "2025-12-25",
-	"assets": {
-		"binding": "ASSETS",
-		"directory": "./public"
-	},
 	"observability": {
 		"enabled": true
 	}
