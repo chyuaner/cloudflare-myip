@@ -1,9 +1,8 @@
 {
 	"name": "cloudflare-myip",
-	"type": "module",
 	"scripts": {
 		"dev": "wrangler dev",
-		"dev:worker": "wrangler dev",
+		"dev:worker": "wrangler dev --ip 0.0.0.0",
 		"dev:vercel": "vercel dev",
 		"start": "tsx src/node.ts",
 		"start:node": "tsx src/node.ts",
@@ -12,9 +11,13 @@
 	},
 	"dependencies": {
 		"@hono/node-server": "^1.19.7",
-		"hono": "^4.11.2"
+		"hono": "^4.11.2",
+		"mmdb-lib": "^3.0.1"
 	},
 	"devDependencies": {
+		"@types/node": "^25.0.3",
+		"tsx": "^4.21.0",
+		"typescript": "^5.9.3",
 		"wrangler": "^4.54.0"
 	}
 }
