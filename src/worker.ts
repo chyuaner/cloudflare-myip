@@ -1,10 +1,12 @@
+import { Hono } from "hono";
 import app from "./app";
-import { type GeoData } from "./types";
+import { type Variables, type Bindings, type GeoData } from "./types";
 
-// Cloudflare Workers Adapter: Add CF-specific middleware
-app.use("*", async (c, next) => {
+const worker = new Hono<{ Bindings: Bindings; Variables: Variables }>();
+
+worker.use("*", async (c, next) => {
   const cf = c.req.raw.cf;
-  const url = new URL(c.req.url);
+  const url = new URL(c.req.url); // Use helper to get hostname easily if needed, though c.req.header('host') also works
 
   const geo: GeoData = {
     ip: c.req.header("CF-Connecting-IP") || c.req.header("x-real-ip") || "",
@@ -31,4 +33,6 @@ app.use("*", async (c, next) => {
   await next();
 });
 
-export default app;
+worker.route("/", app);
+
+export default worker;
