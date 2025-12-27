@@ -14,8 +14,8 @@ vercelApp.use("*", async (c, next) => {
     country: c.req.header("x-vercel-ip-country"),
     regionCode: c.req.header("x-vercel-ip-country-region"),
     city: c.req.header("x-vercel-ip-city"),
-    latitude: c.req.header("x-vercel-ip-latitude"),
     longitude: c.req.header("x-vercel-ip-longitude"),
+    latitude: c.req.header("x-vercel-ip-latitude"),
     timezone: c.req.header("x-vercel-ip-timezone"),
     continent: c.req.header("x-vercel-ip-continent") // Not always available, check docs
   };
