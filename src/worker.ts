@@ -9,7 +9,7 @@ worker.use("*", async (c, next) => {
   const url = new URL(c.req.url); // Use helper to get hostname easily if needed, though c.req.header('host') also works
 
   const geo: GeoData = {
-    ip: c.req.header("CF-Connecting-IP") || c.req.header("x-real-ip") || "",
+    ip: (cf?.ip as string) || c.req.header("CF-Connecting-IP") || c.req.header("x-real-ip") || "",
     hostname: url.hostname,
     
     // CF 資訊
