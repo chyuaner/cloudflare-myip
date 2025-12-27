@@ -1,7 +1,7 @@
 export interface GeoData {
   ip: string;
   hostname?: string;
-  
+
   // CF 資訊 / GeoIP 資訊
   colo?: string;
   country?: string;
