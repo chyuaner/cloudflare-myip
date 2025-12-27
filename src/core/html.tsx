@@ -1,12 +1,8 @@
-import { Hono } from 'hono'
 import type { FC } from 'hono/jsx'
-
-const app = new Hono()
-
 
 const Layout: FC = (props) => {
   return (
-    <Base>
+    <Base title={props.title}>
       <Container>
         {props.children}
       </Container>
@@ -20,7 +16,7 @@ const Base: FC = (props) => {
     <head>
       <meta charset="UTF-8" />
       <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-      <title>${props.title}</title>
+      <title>{props.title}</title>
     </head>
     <body>
       {props.children}
@@ -39,12 +35,55 @@ const Container: FC = (props) => {
   )
 }
 
-const Test: FC<{ messages: string[] }> = (props: {
-  messages: string[]
-}) => {
+const JsonRender: FC<{ value: unknown }> = ({ value }) => {
+  // 內部仍然使用同一個遞迴函式（名稱改為 renderValue）
+  const renderValue = (v: unknown): FC.Element => {
+    if (
+      typeof v === 'string' ||
+      typeof v === 'number' ||
+      typeof v === 'boolean' ||
+      v === null
+    ) {
+      return <span>{String(v)}</span>
+    }
+
+    if (Array.isArray(v)) {
+      return (
+        <ul>
+          {v.map((item, idx) => (
+            <li key={idx}>{renderValue(item)}</li>
+          ))}
+        </ul>
+      )
+    }
+
+    if (typeof v === 'object') {
+      return (
+        <ul>
+          {Object.entries(v as Record<string, unknown>).map(
+            ([k, val]) => (
+              <li key={k}>
+                <strong>{k}:</strong> {renderValue(val)}
+              </li>
+            )
+          )}
+        </ul>
+      )
+    }
+
+    return <span>Unsupported</span>
+  }
+
+  return renderValue(value)
+}
+
+const Test: FC<{ title: string, data: object }> = (props) => {
   return (
-    <Layout>
+    <Layout title={props.title}>
       <h1>Hello Hono!</h1>
+      <div>
+        <JsonRender value={props.data} />
+      </div>
     </Layout>
   )
 }
