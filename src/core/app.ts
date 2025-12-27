@@ -1,6 +1,7 @@
 import { Hono } from "hono";
 import { type Variables, type Bindings } from "./types.js";
 import DataUtils from "./data.js";
+import { Test } from "./html.js";
 const DEFAULT_TZ = 'Asia/Taipei';
 
 const app = new Hono<{ Bindings: Bindings; Variables: Variables }>();
@@ -8,6 +9,14 @@ const app = new Hono<{ Bindings: Bindings; Variables: Variables }>();
 app.get("/", (c) => {
   // const geo = c.var.geo;
   // return c.json(geo);
+
+  // 檢查 Accept header 是否包含 text/html
+  const acceptHeader = c.req.header("Accept") || "";
+  if (acceptHeader.includes("text/html")) {
+    // 這裡可以使用模板引擎（ejs、pug、handlebars …）或直接回傳字串
+    const html = Test({ messages: [] });
+    return c.html(html?.toString() || "");
+  }
 
   const dataUtils = new DataUtils(c);
   dataUtils.setDefaultTz(DEFAULT_TZ);
