@@ -117,6 +117,16 @@ class DataUtils {
         return now;
     }
 
+    getNowArray():object {
+        return {
+            time: this.getTime(),
+            date: this.getDate(),
+            tz: this.getTz(),
+            stz: this.getShortTz(),
+            str: this.getNow(),
+        };
+    }
+
     getDate():string {
         const now = formatDate((this.getUtcDateObj()), this.getTz() ?? "GMT");
         return now;

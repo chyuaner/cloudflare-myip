@@ -46,10 +46,22 @@ app.on('ALL', ["/now", '/now/local'], (c) => {
   const now = dataUtils.getNow();
   return c.text(now);
 });
+app.on('ALL', ["/now/", '/now/local/'], (c) => {
+  const dataUtils = new DataUtils(c);
+  dataUtils.setDefaultTz(DEFAULT_TZ);
+  const nowArray = dataUtils.getNowArray();
+  return c.json(nowArray);
+});
 
 app.on('ALL', ["/utc", '/now/utc'], (c) => {
   const now = new DataUtils(c).getUtc();
   return c.text(now);
+});
+app.on('ALL', ["/utc/", '/now/utc/'], (c) => {
+  const dataUtils = new DataUtils(c);
+  dataUtils.setTz('UTC');
+  const nowArray = dataUtils.getNowArray();
+  return c.json(nowArray);
 });
 
 export default app;
