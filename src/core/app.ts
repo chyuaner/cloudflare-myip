@@ -10,6 +10,7 @@ app.get("/", (c) => {
   // return c.json(geo);
 
   const dataUtils = new DataUtils(c);
+  dataUtils.setDefaultTz(DEFAULT_TZ);
   const data = dataUtils.getData();
   return c.json(data);
 });

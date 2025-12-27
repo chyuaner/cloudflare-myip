@@ -13,8 +13,12 @@ class DataUtils {
     getData() : GeoData {
         return {
             ...this.honoC.var.geo,
-            now: this.getUtc(),
+            now: this.getNow(),
+            date: this.getDate(),
+            time: this.getTime(),
             utc: this.getUtc(),
+            utcDate: this.getUtcDate(),
+            utcTime: this.getUtcTime(),
         };
     }
 
@@ -49,6 +53,15 @@ class DataUtils {
         return now;
     }
 
+    getUtcDate():string {
+        const now = formatDate((new Date()), "GMT");
+        return now;
+    }
+    getUtcTime():string {
+        const now = formatTime((new Date()), "GMT");
+        return now;
+    }
+
     getTz() : string|null {
         return this.tz ?? this.honoC.var.timezone ?? this.defaultTz ?? null;
     }
@@ -77,6 +90,42 @@ class DataUtils {
         const now = formatGMT(utcNow, localTz ?? "GMT");
         return now;
     }
+
+    getDate():string {
+        const now = formatDate((new Date()), this.getTz() ?? "GMT");
+        return now;
+    }
+    getTime():string {
+        const now = formatTime((new Date()), this.getTz() ?? "GMT");
+        return now;
+    }
+}
+
+function format(date: Date, timeZone: string = "GMT", options?: Intl.DateTimeFormatOptions): Record<string, string> {
+    // 建立 formatter（只負責把各部件拆開，不負責拼字）
+    const formatter = new Intl.DateTimeFormat("en-US", {
+        weekday: "short",   // Fri
+        day: "2-digit",     // 26
+        month: "short",     // Dec
+        year: "numeric",    // 2025
+        hour: "2-digit",    // 13
+        minute: "2-digit", // 32
+        second: "2-digit", // 38
+        hour12: false,      // 24 小時制
+        timeZone,           // 例如 GMT / Asia/Taipei …
+        timeZoneName: "short", // 產生 GMT、CET、EST …，GMT 為我們需要的字樣
+        ...options,
+    });
+
+    // 用 formatToParts 把每個欄位分別抓出來
+    const parts = formatter.formatToParts(date);
+    const map: Record<string, string> = {};
+
+    // 只保留非 literal（文字片段），把值存入 map
+    for (const p of parts) {
+        if (p.type !== "literal") map[p.type] = p.value;
+    }
+    return map;
 }
 
 /**
@@ -89,32 +138,21 @@ class DataUtils {
  * @returns         固定格式的字串
  */
 export function formatGMT(date: Date, timeZone: string = "GMT"): string {
-    // 1️⃣ 建立 formatter（只負責把各部件拆開，不負責拼字）
-    const formatter = new Intl.DateTimeFormat("en-US", {
-        weekday: "short",   // Fri
-        day: "2-digit",     // 26
-        month: "short",     // Dec
-        year: "numeric",    // 2025
-        hour: "2-digit",    // 13
-        minute: "2-digit", // 32
-        second: "2-digit", // 38
-        hour12: false,      // 24 小時制
-        timeZone,           // 例如 GMT / Asia/Taipei …
-        timeZoneName: "short", // 產生 GMT、CET、EST …，GMT 為我們需要的字樣
-    });
+    const map = format(date, timeZone);
 
-    // 2️⃣ 用 formatToParts 把每個欄位分別抓出來
-    const parts = formatter.formatToParts(date);
-    const map: Record<string, string> = {};
-
-    // 只保留非 literal（文字片段），把值存入 map
-    for (const p of parts) {
-        if (p.type !== "literal") map[p.type] = p.value;
-    }
-
-    // 3️⃣ 按欲輸出的樣式自行拼接
+    // 按欲輸出的樣式自行拼接
     //    例：weekday, day month year hour:minute:second timezoneName
     return `${map.weekday}, ${map.day} ${map.month} ${map.year} ${map.hour}:${map.minute}:${map.second} ${map.timeZoneName}`;
+}
+
+export function formatDate(date: Date, timeZone: string = "GMT"): string {
+    const map = format(date, timeZone, {month: "2-digit"});
+    return `${map.year}/${map.month}/${map.day} ${map.weekday}`;
+}
+
+export function formatTime(date: Date, timeZone: string = "GMT"): string {
+    const map = format(date, timeZone);
+    return `${map.hour}:${map.minute}:${map.second}`;
 }
 
 export default DataUtils;
