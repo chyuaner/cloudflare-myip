@@ -5,25 +5,47 @@ class DataUtils {
     private honoC : Context
     private defaultTz ?: string;
     private tz ?: string;
+    private utcDateObj = new Date();
 
     constructor(c: Context) {
         this.honoC = c;
     }
 
-    getData() : GeoData {
+    getData() {
         return {
-            ...this.honoC.var.geo,
-            now: this.getNow(),
-            date: this.getDate(),
+            isIpv6: this.isIpv6(),
+            ...this.getHostData(),
+            now: {
+                time: this.getTime(),
+                date: this.getDate(),
+                tz: this.getTz(),
+                stz: this.getShortTz(),
+                str: this.getNow(),
+            },
+            nowStr: this.getNow(),
             time: this.getTime(),
-            utc: this.getUtc(),
+            date: this.getDate(),
+            tz: this.getTz(),
+            stz: this.getShortTz(),
+            utc: {
+                time: this.getUtcTime(),
+                date: this.getUtcDate(),
+                tz: 'UTC',
+                stz: 'UTC',
+                str: this.getUtc(),
+            },
+            utcStr: this.getUtc(),
             utcDate: this.getUtcDate(),
             utcTime: this.getUtcTime(),
         };
     }
 
+    getHostData() : GeoData {
+        return this.honoC.var.geo;
+    }
+
     getIp() : string {
-        return this.honoC.var.ip;
+        return this.honoC.var.geo.ip;
     }
 
     isIpv6() : boolean|undefined {
@@ -48,22 +70,26 @@ class DataUtils {
         }
     }
 
+    private getUtcDateObj() : Date {
+        return this.utcDateObj;
+    }
+
     getUtc() :string {
-        const now = new Date().toUTCString();
+        const now = this.getUtcDateObj().toUTCString();
         return now;
     }
 
     getUtcDate():string {
-        const now = formatDate((new Date()), "GMT");
+        const now = formatDate((this.getUtcDateObj()), "GMT");
         return now;
     }
     getUtcTime():string {
-        const now = formatTime((new Date()), "GMT");
+        const now = formatTime((this.getUtcDateObj()), "GMT");
         return now;
     }
 
     getTz() : string|null {
-        return this.tz ?? this.honoC.var.timezone ?? this.defaultTz ?? null;
+        return this.tz ?? this.honoC.var.geo.timezone ?? this.defaultTz ?? 'UTC';
     }
 
     setDefaultTz(s : string) : string {
@@ -78,7 +104,7 @@ class DataUtils {
 
     getNow() : string {
         const localTz = this.getTz();
-        const utcNow = new Date();
+        const utcNow = this.getUtcDateObj();
         
         // const fmt = new Intl.DateTimeFormat(undefined, {
         //   timeZone: localTz,
@@ -92,12 +118,30 @@ class DataUtils {
     }
 
     getDate():string {
-        const now = formatDate((new Date()), this.getTz() ?? "GMT");
+        const now = formatDate((this.getUtcDateObj()), this.getTz() ?? "GMT");
         return now;
     }
     getTime():string {
-        const now = formatTime((new Date()), this.getTz() ?? "GMT");
+        const now = formatTime((this.getUtcDateObj()), this.getTz() ?? "GMT");
         return now;
+    }
+
+    getShortTz():string {
+        const localTz = this.getTz()?? 'GMT';
+        const utcNow = this.getUtcDateObj();
+        const formatter = new Intl.DateTimeFormat("en-US", {
+            timeZone: localTz,           // 例如 GMT / Asia/Taipei …
+            timeZoneName: "short", // 產生 GMT、CET、EST …，GMT 為我們需要的字樣
+        });
+        // 用 formatToParts 把每個欄位分別抓出來
+        const parts = formatter.formatToParts(utcNow);
+        const map: Record<string, string> = {};
+
+        // 只保留非 literal（文字片段），把值存入 map
+        for (const p of parts) {
+            if (p.type !== "literal") map[p.type] = p.value;
+        }
+        return map.timeZoneName;
     }
 }
 
@@ -147,7 +191,8 @@ export function formatGMT(date: Date, timeZone: string = "GMT"): string {
 
 export function formatDate(date: Date, timeZone: string = "GMT"): string {
     const map = format(date, timeZone, {month: "2-digit"});
-    return `${map.year}/${map.month}/${map.day} ${map.weekday}`;
+    return `${map.year}/${map.month}/${map.day}`;
+    // return `${map.year}/${map.month}/${map.day} ${map.weekday}`;
 }
 
 export function formatTime(date: Date, timeZone: string = "GMT"): string {

@@ -7,8 +7,8 @@ export interface GeoData {
   country?: string;
   city?: string;
   continent?: string;
-  latitude?: string;
   longitude?: string;
+  latitude?: string;
   asn?: number;
   asOrganization?: string;
   isEUCountry?: boolean;
