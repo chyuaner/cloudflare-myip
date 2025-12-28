@@ -122,8 +122,12 @@ const appBackgroundClass = css `
   padding-bottom: env(safe-area-inset-bottom);
   padding-left: env(safe-area-inset-left);
   z-index: -1;
-  /* background: url('https:/fimg.yuaner.tw/background/morphogenesis-l.svg') no-repeat center center; */
-  /* background-size: cover; */
+
+
+  @media (prefers-color-scheme: light) {
+    background: url('https:/fimg.yuaner.tw/background/morphogenesis-l.svg') no-repeat center center;
+    background-size: cover;
+  }
 `
 
 const baseClasses = css`
@@ -169,14 +173,20 @@ const baseStyle = css `
 `;
 
 const mainStyle = css`
-  background: rgba(255, 255, 255, 0.15);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.4);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.5);
   border-radius: 24px;
-  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-  color: white; /* Force white text for glassmorphism usually */
-  text-shadow: 0 1px 3px rgba(0,0,0,0.2);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.05);
+
+  @media (prefers-color-scheme: dark) {
+    background: rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
+    color: white;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+  }
 `;
 
 const blockStyle = css`
