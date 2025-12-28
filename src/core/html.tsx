@@ -1,7 +1,7 @@
 import type { FC } from 'hono/jsx'
-import { gridClass, JsonRender, Layout } from './baseHtml.js'
+import { gridClass, JsonRender, Layout } from './baseHtml'
 import { css } from 'hono/css';
-import { isIpv6 } from './data.js';
+import { isIpv6 } from './data';
 
 
 /* ----------------------------------------------------
@@ -221,7 +221,7 @@ const DataItemsDiv: FC<{ items: Record<string, string> }> = (props) => {
 /* ----------------------------------------------------
 Pages 區
 ---------------------------------------------------- */
-const IndexPage: FC<{ data: any, title?: string, baseData?: object }> = (props) => {
+const IndexPage: FC<{ data: object, title?: string, baseData?: object }> = (props) => {
   return (
     <Layout title={props.title}>
 
