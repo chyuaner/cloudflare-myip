@@ -46,6 +46,17 @@ const IpDiv: FC<{ ip:string, longitude?: string, latitude?: string}> = (props) =
       display: flex;
       align-items: center;
       justify-content: center;
+      a {
+        display: flex;
+        align-items: center;
+        text-decoration: none;
+        color: inherit;
+        transition: opacity 0.2s;
+        &:hover {
+          opacity: 0.7;
+        }
+      }
+
       ul {
         // flex: 1;
 
@@ -78,17 +89,19 @@ const IpDiv: FC<{ ip:string, longitude?: string, latitude?: string}> = (props) =
 
         { (props.longitude || props.latitude) &&
           <div class="pos">
-            <header>
-              📌
-            </header>
-            <ul class={gridClass}>
-              <li class="col-6">
-                longitude: {props.longitude}
-              </li>
-              <li class="col-6">
-                latitude: {props.latitude}
-              </li>
-            </ul>
+            <a href={`https://yandex.com/maps/?ll=${props.longitude}%2C${props.latitude}&z=11`} target="_blank">
+              <header>
+                📌
+              </header>
+              <ul class={gridClass}>
+                <li class="col-6">
+                  longitude: {props.longitude}
+                </li>
+                <li class="col-6">
+                  latitude: {props.latitude}
+                </li>
+              </ul>
+            </a>
           </div>
         }
       </main>

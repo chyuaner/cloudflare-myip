@@ -55,6 +55,44 @@ app.get("/", (c) => {
   return c.json(data);
 });
 
+app.get('/background', async (c) => {
+  const isDark = c.req.query('dark') === 'true';
+
+  const dataUtils = new DataUtils(c);
+  const longitude = c.req.query('longitude') ?? dataUtils.getHostData().longitude;
+  const latitude = c.req.query('latitude') ?? dataUtils.getHostData().latitude;
+
+  if (!latitude || !longitude) {
+    return c.text('Missing coordinates', 500);
+  }
+
+  // 使用 Yandex Static Maps (OpenStreetMap 服務 staticmap.openstreetmap.de 已失效)
+  const zoom = 9;
+  // Yandex 最大尺寸通常為 650x450
+  const width = 600;
+  const height = 450;
+
+  // 注意: Yandex 參數為 ll=lon,lat (經度,緯度)
+  const url = `https://static-maps.yandex.ru/1.x/?lang=en_US&ll=${longitude},${latitude}&z=${zoom}&l=map&size=${width},${height}`;
+
+  const response = await fetch(url, {
+    cf: {
+      cacheTtl: 86400,
+      cacheEverything: true
+    }
+  });
+
+  if (!response.ok) {
+    return c.text('Fetch map failed', 500);
+  }
+
+  const arrayBuffer = await response.arrayBuffer();
+  return c.body(arrayBuffer, 200, {
+    "Content-Type": "image/png",
+    "Cache-Control": "public, max-age=604800, immutable",
+  });
+})
+
 // app.all("/ip", (c) => {
 //   return c.text(c.var.geo.ip)
 // });
@@ -71,13 +109,13 @@ function commonResponse<T extends Env = {}>(c: Context<T>, output: any, field?: 
   const acceptHeader = c.req.header("Accept") || "";
   if (acceptHeader.includes("text/html")) {
     const isSimple = typeof outputText !== 'object' || outputText === null;
-    const titleText = field 
+    const titleText = field
       ? (isSimple ? `${field}: ${outputText}` : field)
       : (isSimple ? String(outputText) : undefined);
     const h2 = field;
 
-    const html = CommonPage({ 
-      data: outputText, 
+    const html = CommonPage({
+      data: outputText,
       h2,
       ...(titleText ? { title: titleText } : {})
     });
