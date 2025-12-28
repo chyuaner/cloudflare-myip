@@ -1,7 +1,7 @@
 import { Hono } from "hono";
 import { type Variables, type Bindings } from "./types.js";
 import DataUtils from "./data.js";
-import { Test } from "./html.js";
+import { CommonPage } from "./html.js";
 const DEFAULT_TZ = 'Asia/Taipei';
 
 const app = new Hono<{ Bindings: Bindings; Variables: Variables }>();
@@ -18,7 +18,7 @@ app.get("/", (c) => {
   const acceptHeader = c.req.header("Accept") || "";
   if (acceptHeader.includes("text/html")) {
     // 這裡可以使用模板引擎（ejs、pug、handlebars …）或直接回傳字串
-    const html = Test({ title: 'aaa', data });
+    const html = CommonPage({ title: 'aaa', data });
     return c.html(html?.toString() || "");
   }
 

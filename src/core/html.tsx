@@ -16,7 +16,7 @@ const Base: FC = (props) => {
     <head>
       <meta charset="UTF-8" />
       <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-      <title>{props.title}</title>
+      <title>{props.title ?? '查看你的公網IP'}</title>
     </head>
     <body>
       {props.children}
@@ -77,10 +77,11 @@ const JsonRender: FC<{ value: unknown }> = ({ value }) => {
   return renderValue(value)
 }
 
-const Test: FC<{ title: string, data: object }> = (props) => {
+const CommonPage: FC<{ data: object, title?: string, baseData?: object }> = (props) => {
   return (
     <Layout title={props.title}>
-      <h1>Hello Hono!</h1>
+      {props.baseData?.ip && <h1>你的IP: {props.baseData.ip}</h1>}
+
       <div>
         <JsonRender value={props.data} />
       </div>
@@ -88,4 +89,4 @@ const Test: FC<{ title: string, data: object }> = (props) => {
   )
 }
 
-export { Test }
+export { CommonPage }
