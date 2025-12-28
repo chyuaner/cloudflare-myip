@@ -67,7 +67,7 @@ const gridClass = css`
   .col-lg-9  { grid-column: span 12; }
   .col-12    { grid-column: span 12; }
 
-  @media (min-width: 640px) {
+  @media (min-width: 480px) {
       .col-1    { grid-column: span 1; }
       .col-2    { grid-column: span 2; }
       .col-3    { grid-column: span 3; }
@@ -82,7 +82,7 @@ const gridClass = css`
       .col-lg-9 { grid-column: span 12; }
       .col-12   { grid-column: span 12; }
   }
-  @media (min-width: 1024px) {
+  @media (min-width: 640px) {
       .col-1    { grid-column: span 1; }
       .col-2    { grid-column: span 2; }
       .col-3    { grid-column: span 3; }
@@ -119,14 +119,34 @@ const appBackgroundClass = css `
 `
 
 const baseClasses = css`
+  body{
+    margin: 0;
+    padding: 0;
+  }
+
   body { background: #fafafa; }
   @media (prefers-color-scheme: dark) {
     body { background: #303341; color: white;}
   }
 `;
 
+const appContentClass = css `
+  display: flex;
+  // margin: 0;
+  margin-top: env(safe-area-inset-top);
+  max-width: 100vw;
+  min-height: 100vh;
+  @supports (height: 100dvh) {
+      min-height: 100dvh;
+  }
+  min-height: 100dvh;
+  align-items: center;
+  justify-content: center;
+`;
+
 const mainClass = css`
-  margin: 50 auto;
+  width: 100%;
+  margin: 2rem;
   max-width: 768px;
   border: 1px solid white;
 `;
@@ -162,7 +182,7 @@ const Base: FC = (props) => {
       <div id="background" class={appBackgroundClass}>
       </div>
 
-      <main id="app-content" class="app-content" style={`padding-top: env(safe-area-inset-top);`}>
+      <main id="app-content" class={appContentClass}>
         {props.children}
       </main>
     </body>
@@ -174,4 +194,4 @@ const Base: FC = (props) => {
 /* ----------------------------------------------------
 設定哪些組件要開放
 ---------------------------------------------------- */
-export {Layout, JsonRender};
+export {Layout, JsonRender, gridClass};
