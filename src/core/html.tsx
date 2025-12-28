@@ -1,6 +1,7 @@
 import type { FC } from 'hono/jsx'
 import { gridClass, JsonRender, Layout } from './baseHtml'
 import { css } from 'hono/css';
+import { isIpv6 } from './data';
 
 
 /* ----------------------------------------------------
@@ -58,7 +59,7 @@ const IpDiv: FC<{ ip:string, longitude?: string, latitude?: string}> = (props) =
       </header>
       <main>
         <div class="main-text">
-          <p>{props.ip}</p>
+          <p className={isIpv6(props.ip) == false && "ipv4"}>{props.ip}</p>
           {/* <p class="ipv4">192.168.253.112</p> */}
           {/* <p style="word-break: break-all">2001:b400:e2c2:a8bb:e97d:75b:7b16:b6fe</p> */}
         </div>

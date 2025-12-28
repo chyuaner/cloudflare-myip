@@ -50,24 +50,7 @@ class DataUtils {
 
   isIpv6(): boolean | undefined {
     const thisIp = this.getIp();
-
-    // IPv6 正則（支援縮寫與 IPv4 映射形式）
-    const ipv6Pattern = /^(?:[A-F0-9]{1,4}:){7}[A-F0-9]{1,4}$|^(?:[A-F0-9]{1,4}:){1,7}:$|^(?:[A-F0-9]{1,4}:){1,6}:[A-F0-9]{1,4}$|^(?:[A-F0-9]{1,4}:){1,5}(?::[A-F0-9]{1,4}){1,2}$|^(?:[A-F0-9]{1,4}:){1,4}(?::[A-F0-9]{1,4}){1,3}$|^(?:[A-F0-9]{1,4}:){1,3}(?::[A-F0-9]{1,4}){1,4}$|^(?:[A-F0-9]{1,4}:){1,2}(?::[A-F0-9]{1,4}){1,5}$|^[A-F0-9]{1,4}:(?::[A-F0-9]{1,4}){1,6}$|^:(?::[A-F0-9]{1,4}){1,7}$|^fe80:(?::[A-F0-9]{0,4}){0,4}%[0-9a-zA-Z]{1,}$|^::(ffff(?::0{1,4}){0,1}:){0,1}((25[0-5]|(2[0-4]|1{0,1}[0-9])?[0-9])\.){3}(25[0-5]|(2[0-4]|1{0,1}[0-9])?[0-9])$/i;
-
-    // IPv4 正則
-    const ipv4Pattern = /^(25[0-5]|2[0-4]\d|1?\d{1,2})(\.(25[0-5]|2[0-4]\d|1?\d{1,2})){3}$/;
-
-    // 符合 IPv6 規則 → true
-    if (ipv6Pattern.test(thisIp)) {
-      return true;
-    }
-    // 符合 IPv4 規則 → false
-    else if (ipv4Pattern.test(thisIp)) {
-      return false;
-    }
-    else {
-      return undefined;
-    }
+    return isIpv6(thisIp);
   }
 
   private getUtcDateObj(): Date {
@@ -208,6 +191,26 @@ export function formatDate(date: Date, timeZone: string = "GMT"): string {
 export function formatTime(date: Date, timeZone: string = "GMT"): string {
   const map = format(date, timeZone);
   return `${map.hour}:${map.minute}:${map.second}`;
+}
+
+export function isIpv6(thisIp: string): boolean | undefined {
+  // IPv6 正則（支援縮寫與 IPv4 映射形式）
+  const ipv6Pattern = /^(?:[A-F0-9]{1,4}:){7}[A-F0-9]{1,4}$|^(?:[A-F0-9]{1,4}:){1,7}:$|^(?:[A-F0-9]{1,4}:){1,6}:[A-F0-9]{1,4}$|^(?:[A-F0-9]{1,4}:){1,5}(?::[A-F0-9]{1,4}){1,2}$|^(?:[A-F0-9]{1,4}:){1,4}(?::[A-F0-9]{1,4}){1,3}$|^(?:[A-F0-9]{1,4}:){1,3}(?::[A-F0-9]{1,4}){1,4}$|^(?:[A-F0-9]{1,4}:){1,2}(?::[A-F0-9]{1,4}){1,5}$|^[A-F0-9]{1,4}:(?::[A-F0-9]{1,4}){1,6}$|^:(?::[A-F0-9]{1,4}){1,7}$|^fe80:(?::[A-F0-9]{0,4}){0,4}%[0-9a-zA-Z]{1,}$|^::(ffff(?::0{1,4}){0,1}:){0,1}((25[0-5]|(2[0-4]|1{0,1}[0-9])?[0-9])\.){3}(25[0-5]|(2[0-4]|1{0,1}[0-9])?[0-9])$/i;
+
+  // IPv4 正則
+  const ipv4Pattern = /^(25[0-5]|2[0-4]\d|1?\d{1,2})(\.(25[0-5]|2[0-4]\d|1?\d{1,2})){3}$/;
+
+  // 符合 IPv6 規則 → true
+  if (ipv6Pattern.test(thisIp)) {
+    return true;
+  }
+  // 符合 IPv4 規則 → false
+  else if (ipv4Pattern.test(thisIp)) {
+    return false;
+  }
+  else {
+    return undefined;
+  }
 }
 
 export default DataUtils;
