@@ -1,5 +1,5 @@
 import { Context } from "hono";
-import { GeoData } from "./types.js";
+import { GeoData } from "./types";
 
 class DataUtils {
   private honoC: Context
