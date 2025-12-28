@@ -23,12 +23,22 @@ const IpDiv: FC<{ ip:string, longitude?: string, latitude?: string}> = (props) =
         margin: 2rem 0;
       }
       .ipv4 {
+          color: #3b82f6; /* Modern Blue */
           @media (min-width: 480px) {
             font-size: 3rem;
           }
           @media (min-width: 640px) {
             font-size: 4rem;
           }
+      }
+      .ipv6 {
+          color: #10b981; /* Modern Green */
+          word-break: break-all;
+      }
+
+      @media (prefers-color-scheme: dark) {
+        .ipv4 { color: #60a5fa; }
+        .ipv6 { color: #34d399; }
       }
     }
 
@@ -61,7 +71,7 @@ const IpDiv: FC<{ ip:string, longitude?: string, latitude?: string}> = (props) =
       </header>
       <main>
         <div class="main-text">
-          <p className={isIpv6(props.ip) == false && "ipv4"}>{props.ip}</p>
+          <p class={isIpv6(props.ip) ? "ipv6" : "ipv4"}>{props.ip}</p>
           {/* <p class="ipv4">192.168.253.112</p> */}
           {/* <p style="word-break: break-all">2001:b400:e2c2:a8bb:e97d:75b:7b16:b6fe</p> */}
         </div>
