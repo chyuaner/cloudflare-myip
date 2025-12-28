@@ -1,5 +1,6 @@
 import type { FC } from 'hono/jsx'
 import { css, cx, Style } from 'hono/css'
+import { ASSETS } from './assets.gen.js'
 
 /* ----------------------------------------------------
 Helper區
@@ -125,10 +126,8 @@ const appBackgroundClass = css `
 `
 
 const baseClasses = css`
-  body{
-    margin: 0;
-    padding: 0;
-  }
+  margin: 0;
+  padding: 0;
 `;
 
 const appContentClass = css `
@@ -159,47 +158,72 @@ const mainClass = css`
 Style區
 ---------------------------------------------------- */
 
-const baseStyle = css `
-  @font-face {
-    font-family: 'CustomFont';
-    src: url('/font.woff2') format('woff2');
-    font-weight: normal;
-    font-style: normal;
-    font-display: swap;
+const blockStyle = css`
+  .block{
   }
-
-  body {
-    font-family: 'CustomFont', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-    background: #eceff4;
-    background: linear-gradient(135deg,  #f6f8f9 0%, #e5ebee 50%, #d7dee3 56%, #f5f7f9 100%);
-    color: #333;
-  }
-  hr {
-    border: 0;
-    height: 1px;
-    background: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0));
-    margin: 0.1rem 0;
-    grid-column: span 12;
-  }
-  @media (prefers-color-scheme: dark) {
-    body {
-      background: #353a52;
-      background: linear-gradient(149deg,rgba(40, 42, 54, 1) 0%, rgba(51, 54, 69, 1) 13%, rgb(53, 58, 82) 30%, rgba(44, 47, 62, 1) 53%, rgba(40, 42, 54, 1) 93%, rgba(62, 54, 71, 1) 100%);
-      color: white;
-    }
-    hr {
-      background: linear-gradient(to right, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0));
-    }
+  .block-border{
   }
 `;
+
+const GlobalStyle = () => (
+  <style dangerouslySetInnerHTML={{ __html: `
+    @font-face {
+      font-family: 'CustomFont';
+      src: url('/font.woff2') format('woff2');
+      font-weight: normal;
+      font-style: normal;
+      font-display: swap;
+    }
+    body {
+      font-family: 'CustomFont', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #eceff4;
+      background: linear-gradient(135deg,  #f6f8f9 0%, #e5ebee 50%, #d7dee3 56%, #f5f7f9 100%);
+      color: #333;
+    }
+    hr {
+      border: 0;
+      height: 1px;
+      background: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0));
+      margin: 0.1rem 0;
+    }
+    @media (prefers-color-scheme: dark) {
+      body {
+        background: #353a52;
+        background: linear-gradient(149deg,rgba(40, 42, 54, 1) 0%, rgba(51, 54, 69, 1) 13%, rgb(53, 58, 82) 30%, rgba(44, 47, 62, 1) 53%, rgba(40, 42, 54, 1) 93%, rgba(62, 54, 71, 1) 100%);
+        color: white;
+      }
+      hr {
+        background: linear-gradient(to right, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0));
+      }
+    }
+  ` }} />
+);
+
+
+/* ----------------------------------------------------
+Layout區
+---------------------------------------------------- */
+
+const Layout: FC = (props) => {
+  return (
+    <Base title={props.title}>
+      <div id="main" class={cx(mainClass, mainStyle)}>
+        <div class={cx('container', gridClass, blockClass)}>
+            {props.children}
+        </div>
+      </div>
+    </Base>
+  )
+}
+
 const appBackgroundStyle = css `
   background: url('/background') no-repeat center center;
   background-size: cover;
 
   @media (prefers-color-scheme: dark) {
-    // background: url('/background?dark=true') no-repeat center center;
-    // background-size: cover;
-    filter: invert(1) hue-rotate(180deg) brightness(0.8);
+    /* filter: invert(1) hue-rotate(180deg) brightness(0.8); */
   }
 `;
 
@@ -220,39 +244,16 @@ const mainStyle = css`
   }
 `;
 
-const blockStyle = css`
-  .block{
-  }
-  .block-border{
-  }
-`;
-
-
-/* ----------------------------------------------------
-Layout區
----------------------------------------------------- */
-
-const Layout: FC = (props) => {
-  return (
-    <Base title={props.title}>
-      <div id="main" class={cx(mainClass, mainStyle)}>
-        <div class={cx('container', gridClass, blockClass)}>
-            {props.children}
-        </div>
-      </div>
-    </Base>
-  )
-}
-
 
 const Base: FC = (props) => {
   return (
-    <html lang="zh-tw" class={cx(baseClasses, baseStyle)}>
+    <html lang="zh-tw" class={baseClasses}>
     <head>
       <meta charset="UTF-8" />
       <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
       <title>{props.title ?? '查看你的公網IP'}</title>
       <Style />
+      <GlobalStyle />
     </head>
     <body>
       <div id="background" class={cx(appBackgroundClass, appBackgroundStyle)}>
