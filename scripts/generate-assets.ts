@@ -66,9 +66,17 @@ function run() {
  */
 export const ASSETS = {
 ${Object.entries(results).map(([key, val]) => `  ${key}: "${val}",`).join('\n')}
-  updated_at: "${new Date().toISOString()}"
 } as const;
 `;
+
+  // 檢查內容是否一致，避免觸發 Wrangler Watch 造成無限對圈
+  if (fs.existsSync(OUTPUT_FILE)) {
+    const existingContent = fs.readFileSync(OUTPUT_FILE, 'utf-8');
+    if (existingContent === content) {
+      console.log(`✅ Assets are already up to date. (Skipped writing)`);
+      return;
+    }
+  }
 
   fs.writeFileSync(OUTPUT_FILE, content);
   console.log(`✅ Assets generated to ${OUTPUT_FILE}`);
