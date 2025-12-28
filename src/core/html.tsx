@@ -139,6 +139,30 @@ const DateTimeDiv: FC<{ time:string, date?: string, tz?: string, stz?: string}> 
   );
 }
 
+const DataItemsDiv: FC<{ items: Record<string, string> }> = (props) => {
+  const style = css `
+    h2 {
+      font-size: 1rem;
+    }
+
+  `;
+
+  return (
+    <section class={style}>
+      <h2>其他資訊</h2>
+
+      {/* 依 items 產生列表 */}
+      <ul class={gridClass}>
+        {Object.entries(props.items).map(([key, value]) => (
+          <li class="col-4 card" key={key}>
+            <h3>{key}</h3>
+            <p>{value}</p>
+          </li>
+        ))}
+      </ul>
+    </section>
+  );
+}
 
 
 /* ----------------------------------------------------
@@ -162,6 +186,23 @@ const IndexPage: FC<{ data: object, title?: string, baseData?: object }> = (prop
           date = {props.data.now.date}
           tz = {props.data.now.tz}
           stz = {props.data.now.stz}
+        />
+      </div>
+
+      <div class="block col-12">
+        <DataItemsDiv items={{
+          asOrganization: props.data.asOrganization,
+          asn           : props.data.asn,
+          country       : props.data.country,
+          city          : props.data.city,
+          continent     : props.data.continent,
+          region        : props.data.region,
+          regionCode    : props.data.regionCode,
+          timezone      : props.data.timezone,
+          isEUCountry   : props.data.isEUCountry,
+          postalCode    : props.data.postalCode,
+          metroCode     : props.data.metroCode,
+        }}
         />
       </div>
 
