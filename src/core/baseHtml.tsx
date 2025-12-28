@@ -223,7 +223,7 @@ const appBackgroundStyle = css `
   background-size: cover;
 
   @media (prefers-color-scheme: dark) {
-    /* filter: invert(1) hue-rotate(180deg) brightness(0.8); */
+    filter: invert(1) hue-rotate(180deg) brightness(0.8);
   }
 `;
 
