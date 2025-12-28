@@ -9,6 +9,9 @@
 	"compatibility_date": "2025-12-25",
 	"observability": {
 		"enabled": true
+	},
+	"build": {
+		"command": "npm run build:assets"
 	}
 	/**
 	 * Smart Placement

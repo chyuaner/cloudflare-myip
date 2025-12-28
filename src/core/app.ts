@@ -2,7 +2,7 @@ import { Hono, Context, Env } from "hono";
 import { type Variables, type Bindings } from "./types.js";
 import DataUtils from "./data.js";
 import { IndexPage, CommonPage } from "./html.js";
-import { ASSETS } from "./assets.gen.js";
+import { ASSETS } from "./assets.gen";
 
 const DEFAULT_TZ = 'Asia/Taipei';
 
