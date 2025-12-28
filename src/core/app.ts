@@ -30,7 +30,7 @@ app.get("/", (c) => {
 //   return c.text(c.var.geo.ip)
 // });
 
-function commonResponse<T extends Env = {}>(c: Context<T>, output: any) {
+function commonResponse<T extends Env = {}>(c: Context<T>, output: any, title?: string) {
   let outputText = output;
 
   // 若沒有對應的值（常見於 Cloudflare Workers 的 `cf` 內可能缺少某欄位），回 404
@@ -42,7 +42,7 @@ function commonResponse<T extends Env = {}>(c: Context<T>, output: any) {
   const acceptHeader = c.req.header("Accept") || "";
   if (acceptHeader.includes("text/html")) {
     // 這裡可以使用模板引擎（ejs、pug、handlebars …）或直接回傳字串
-    const html = CommonPage({ data: outputText });
+    const html = CommonPage({ data: outputText, title: title });
     return c.html(html?.toString() || "");
   }
 
@@ -69,7 +69,7 @@ app.all(
     // 注意：`c.var.geo` 在 TypeScript 中的型別預設是 `any`，若想要更嚴格可自行宣告介面
     const data = new DataUtils(c).getData();
     const value = (data as Record<string, unknown>)[field];
-    return commonResponse(c, value);
+    return commonResponse(c, value, field);
 });
 
 app.on('ALL', ["/now", '/now/local'], (c) => {

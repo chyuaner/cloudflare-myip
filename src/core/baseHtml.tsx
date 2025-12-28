@@ -99,9 +99,10 @@ const gridClass = css`
   }
 `;
 
-/* ----------------------------------------------------
-Style區
----------------------------------------------------- */
+const blockClass = css`
+  .block{margin:0.5rem 0;padding:1rem;word-break: break-all;}
+  .block-border{border-width:1px;border-style:solid;}
+`;
 
 const appBackgroundClass = css `
   position: fixed;
@@ -123,11 +124,6 @@ const baseClasses = css`
     margin: 0;
     padding: 0;
   }
-
-  body { background: #fafafa; }
-  @media (prefers-color-scheme: dark) {
-    body { background: #303341; color: white;}
-  }
 `;
 
 const appContentClass = css `
@@ -148,7 +144,28 @@ const mainClass = css`
   width: 100%;
   margin: 2rem;
   max-width: 768px;
+`;
+
+/* ----------------------------------------------------
+Style區
+---------------------------------------------------- */
+
+const baseStyle = css `
+  body { background: #fafafa; }
+  @media (prefers-color-scheme: dark) {
+    body { background: #303341; color: white;}
+  }
+`;
+
+const mainStyle = css`
   border: 1px solid white;
+`;
+
+const blockStyle = css`
+  .block{
+  }
+  .block-border{
+  }
 `;
 
 
@@ -159,8 +176,8 @@ Layout區
 const Layout: FC = (props) => {
   return (
     <Base title={props.title}>
-      <div id="main" class={mainClass}>
-        <div class={cx('container', gridClass)}>
+      <div id="main" class={cx(mainClass, mainStyle)}>
+        <div class={cx('container', gridClass, blockClass)}>
             {props.children}
         </div>
       </div>
@@ -171,7 +188,7 @@ const Layout: FC = (props) => {
 
 const Base: FC = (props) => {
   return (
-    <html lang="zh-tw" class={baseClasses}>
+    <html lang="zh-tw" class={cx(baseClasses, baseStyle)}>
     <head>
       <meta charset="UTF-8" />
       <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
