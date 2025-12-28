@@ -161,7 +161,7 @@ const DataItemsDiv: FC<{ items: Record<string, string> }> = (props) => {
       transition: all 0.3s ease;
       list-style: none;
       box-shadow: 0 2px 8px rgba(0,0,0,0.02);
-      
+
       &:hover {
         background: rgba(255, 255, 255, 0.8);
         transform: translateY(-2px);
@@ -176,7 +176,7 @@ const DataItemsDiv: FC<{ items: Record<string, string> }> = (props) => {
         letter-spacing: 0.05em;
         color: #555;
       }
-      
+
       p {
         margin: 0.5rem 0 0 0;
         font-weight: 500;
@@ -233,6 +233,8 @@ const IndexPage: FC<{ data: any, title?: string, baseData?: object }> = (props) 
         />
       </div>
 
+      <hr />
+
       <div class="block col-12">
         <DateTimeDiv
           time = {props.data.now.time}
@@ -241,6 +243,8 @@ const IndexPage: FC<{ data: any, title?: string, baseData?: object }> = (props) 
           stz = {props.data.now.stz}
         />
       </div>
+
+      <hr />
 
       <div class="block col-12">
         <DataItemsDiv items={{
