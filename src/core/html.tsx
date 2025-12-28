@@ -277,12 +277,12 @@ const IndexPage: FC<{ data: any, title?: string, baseData?: object }> = (props) 
   );
 }
 
-const CommonPage: FC<{ data: any, title?: string, baseData?: object }> = (props) => {
+const CommonPage: FC<{ data: any, h2?: string, title?: string, baseData?: object }> = (props) => {
   return (
-    <Layout>
+    <Layout title={props.title}>
       <section class="block col-12">
         {/* {props.baseData?.ip && <h1>你的IP: {props.baseData.ip}</h1>} */}
-        {props.title && <h2>{props.title}</h2>}
+        {props.h2 && <h2>{props.h2}</h2>}
 
         <div class="block col-12">
           <section>

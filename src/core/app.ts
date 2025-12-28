@@ -45,8 +45,10 @@ app.get("/", (c) => {
   // 檢查 Accept header 是否包含 text/html
   const acceptHeader = c.req.header("Accept") || "";
   if (acceptHeader.includes("text/html")) {
-    // 這裡可以使用模板引擎（ejs、pug、handlebars …）或直接回傳字串
-    const html = IndexPage({ title: 'aaa', data });
+
+    const title = '你的IP是: ' + data.ip;
+
+    const html = IndexPage({ title, data });
     return c.html(html?.toString() || "");
   }
 
@@ -57,7 +59,7 @@ app.get("/", (c) => {
 //   return c.text(c.var.geo.ip)
 // });
 
-function commonResponse<T extends Env = {}>(c: Context<T>, output: any, title?: string) {
+function commonResponse<T extends Env = {}>(c: Context<T>, output: any, field?: string, title?: string) {
   let outputText = output;
 
   // 若沒有對應的值（常見於 Cloudflare Workers 的 `cf` 內可能缺少某欄位），回 404
@@ -68,8 +70,17 @@ function commonResponse<T extends Env = {}>(c: Context<T>, output: any, title?: 
   // 檢查 Accept header 是否包含 text/html
   const acceptHeader = c.req.header("Accept") || "";
   if (acceptHeader.includes("text/html")) {
-    // 這裡可以使用模板引擎（ejs、pug、handlebars …）或直接回傳字串
-    const html = CommonPage({ data: outputText, title: title });
+    const isSimple = typeof outputText !== 'object' || outputText === null;
+    const titleText = field 
+      ? (isSimple ? `${field}: ${outputText}` : field)
+      : (isSimple ? String(outputText) : undefined);
+    const h2 = field;
+
+    const html = CommonPage({ 
+      data: outputText, 
+      h2,
+      ...(titleText ? { title: titleText } : {})
+    });
     return c.html(html?.toString() || "");
   }
 
