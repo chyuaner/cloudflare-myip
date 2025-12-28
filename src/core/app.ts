@@ -1,11 +1,38 @@
-import { Hono } from "hono";
+import { Hono, Context, Env } from "hono";
 import { type Variables, type Bindings } from "./types.js";
 import DataUtils from "./data.js";
 import { IndexPage, CommonPage } from "./html.js";
-import { Context, Env } from "hono";
+import { ASSETS } from "./assets.gen.js";
+
 const DEFAULT_TZ = 'Asia/Taipei';
 
 const app = new Hono<{ Bindings: Bindings; Variables: Variables }>();
+
+// Helper to serve base64 assets
+const serveBase64 = (base64: string, contentType: string) => {
+  const binary = atob(base64);
+  const bytes = new Uint8Array(binary.length);
+  for (let i = 0; i < binary.length; i++) {
+    bytes[i] = binary.charCodeAt(i);
+  }
+  return {
+    body: bytes.buffer,
+    headers: {
+      "Content-Type": contentType,
+      "Cache-Control": "public, max-age=604800, immutable",
+    },
+  };
+};
+
+app.get("/favicon.png", (c) => {
+  const asset = serveBase64(ASSETS.favicon_png, "image/png");
+  return c.body(asset.body, 200, asset.headers);
+});
+
+app.get("/favicon.ico", (c) => {
+  const asset = serveBase64(ASSETS.favicon_ico, "image/x-icon");
+  return c.body(asset.body, 200, asset.headers);
+});
 
 app.get("/", (c) => {
   // const geo = c.var.geo;

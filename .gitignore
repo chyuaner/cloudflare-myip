@@ -36,3 +36,6 @@ lerna-debug.log*
 !.dev.vars.example
 !.env.example
 .vercel
+
+# Generated Assets
+src/core/assets.gen.ts

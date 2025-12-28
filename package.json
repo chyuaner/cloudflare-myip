@@ -2,13 +2,14 @@
 	"name": "cloudflare-myip",
 	"type": "module",
 	"scripts": {
-		"dev": "wrangler dev",
-		"dev:worker": "wrangler dev --ip 0.0.0.0",
-		"dev:vercel": "vercel dev",
+		"build:assets": "tsx scripts/generate-assets.ts",
+		"dev": "npm run build:assets && wrangler dev",
+		"dev:worker": "npm run build:assets && wrangler dev --ip 0.0.0.0",
+		"dev:vercel": "npm run build:assets && vercel dev",
 		"start": "tsx src/node.ts",
 		"start:node": "tsx src/node.ts",
-		"build": "tsc",
-		"deploy": "wrangler deploy --minify",
+		"build": "npm run build:assets && tsc",
+		"deploy": "npm run build:assets && wrangler deploy --minify",
 		"cf-typegen": "wrangler types --env-interface CloudflareBindings"
 	},
 	"dependencies": {
