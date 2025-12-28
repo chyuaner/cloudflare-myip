@@ -6,7 +6,7 @@ Helper區
 ---------------------------------------------------- */
 const JsonRender: FC<{ value: unknown }> = ({ value }) => {
   // 內部仍然使用同一個遞迴函式（名稱改為 renderValue）
-  const renderValue = (v: unknown) => {
+  const renderValue = (v: unknown): FC.Element => {
     if (
       typeof v === 'string' ||
       typeof v === 'number' ||
