@@ -122,12 +122,6 @@ const appBackgroundClass = css `
   padding-bottom: env(safe-area-inset-bottom);
   padding-left: env(safe-area-inset-left);
   z-index: -1;
-
-
-  @media (prefers-color-scheme: light) {
-    background: url('https://fimg.yuaner.tw/background/morphogenesis-l.svg') no-repeat center center;
-    background-size: cover;
-  }
 `
 
 const baseClasses = css`
@@ -166,10 +160,24 @@ Style區
 ---------------------------------------------------- */
 
 const baseStyle = css `
-  body { background: #fafafa; color: #333; }
-  @media (prefers-color-scheme: dark) {
-    body { background: #303341; color: white;}
+  body {
+    background: #eceff4;
+    background: linear-gradient(135deg,  #f6f8f9 0%, #e5ebee 50%, #d7dee3 56%, #f5f7f9 100%);
+    color: #333;
   }
+  @media (prefers-color-scheme: dark) {
+    body {
+      background: #353a52;
+      background: linear-gradient(149deg,rgba(40, 42, 54, 1) 0%, rgba(51, 54, 69, 1) 13%, rgb(53, 58, 82) 30%, rgba(44, 47, 62, 1) 53%, rgba(40, 42, 54, 1) 93%, rgba(62, 54, 71, 1) 100%);
+      color: white;
+    }
+  }
+`;
+const appBackgroundStyle = css `
+  // @media (prefers-color-scheme: light) {
+  //   background: url('https://fimg.yuaner.tw/background/morphogenesis-l.svg') no-repeat center center;
+  //   background-size: cover;
+  // }
 `;
 
 const mainStyle = css`
@@ -224,7 +232,7 @@ const Base: FC = (props) => {
       <Style />
     </head>
     <body>
-      <div id="background" class={appBackgroundClass}>
+      <div id="background" class={cx(appBackgroundClass, appBackgroundStyle)}>
       </div>
 
       <main id="app-content" class={appContentClass}>
