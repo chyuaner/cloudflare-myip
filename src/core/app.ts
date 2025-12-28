@@ -71,13 +71,10 @@ app.get('/background', async (c) => {
     return c.text('Missing coordinates', 500);
   }
 
-  // 使用 Yandex Static Maps (OpenStreetMap 服務 staticmap.openstreetmap.de 已失效)
+  // 使用 Yandex Static Maps
   const zoom = 9;
-  // Yandex 最大尺寸通常為 650x450
   const width = 600;
   const height = 450;
-
-  // 注意: Yandex 參數為 ll=lon,lat (經度,緯度)
   const url = `https://static-maps.yandex.ru/1.x/?lang=en_US&ll=${longitude},${latitude}&z=${zoom}&l=map&size=${width},${height}`;
 
   const response = await fetch(url, {
@@ -92,6 +89,49 @@ app.get('/background', async (c) => {
   }
 
   const arrayBuffer = await response.arrayBuffer();
+
+  if (isDark) {
+    // 後端處理：將圖片封裝進帶有 SVG Filter 的容器中，達成「預先反轉」
+    const uint8Array = new Uint8Array(arrayBuffer);
+    let binary = '';
+    for (let i = 0; i < uint8Array.byteLength; i++) {
+      binary += String.fromCharCode(uint8Array[i]);
+    }
+    const base64 = btoa(binary);
+
+    const svg = `
+    <svg width="${width}" height="${height}" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <defs>
+    <filter id="invert">
+      <!-- 1. 色彩反轉 -->
+      <feComponentTransfer>
+        <feFuncR type="table" tableValues="1 0"/>
+        <feFuncG type="table" tableValues="1 0"/>
+        <feFuncB type="table" tableValues="1 0"/>
+      </feComponentTransfer>
+      <!-- 2. 色相旋轉補正 -->
+      <feColorMatrix type="hueRotate" values="180"/>
+      <!-- 3. 降低飽和度，讓地圖看起來更 Premium (不那麼刺眼) -->
+      <feColorMatrix type="saturate" values="0.4"/>
+      <!-- 4. 調整最後的亮點與對比 -->
+      <feComponentTransfer>
+        <!-- R, G 通道壓更低 (0.35)，讓陸地/海洋變深 -->
+        <feFuncR type="linear" slope="0.35" intercept="-0.05"/>
+        <feFuncG type="linear" slope="0.35" intercept="-0.05"/>
+        <!-- B 通道稍微保留高一點點 (0.45)，讓深處帶點藍色感 -->
+        <feFuncB type="linear" slope="0.45" intercept="-0.03"/>
+      </feComponentTransfer>
+    </filter>
+  </defs>
+  <image xlink:href="data:image/png;base64,${base64}" width="100%" height="100%" filter="url(#invert)"/>
+</svg>`.trim();
+
+    return c.body(svg, 200, {
+      "Content-Type": "image/svg+xml",
+      "Cache-Control": "public, max-age=604800, immutable",
+    });
+  }
+
   return c.body(arrayBuffer, 200, {
     "Content-Type": "image/png",
     "Cache-Control": "public, max-age=604800, immutable",
