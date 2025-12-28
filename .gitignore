@@ -39,3 +39,12 @@ lerna-debug.log*
 
 # Generated Assets
 src/core/assets.gen.ts
+
+# Compiled JS
+src/**/*.js
+src/**/*.jsx
+src/**/*.d.ts
+src/**/*.js.map
+api/**/*.js
+api/**/*.d.ts
+api/**/*.js.map
