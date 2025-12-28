@@ -95,10 +95,10 @@ const IpDiv: FC<{ ip:string, longitude?: string, latitude?: string}> = (props) =
               </header>
               <ul class={gridClass}>
                 <li class="col-6">
-                  longitude: {props.longitude}
+                  經度: {props.longitude}
                 </li>
                 <li class="col-6">
-                  latitude: {props.latitude}
+                  緯度: {props.latitude}
                 </li>
               </ul>
             </a>
@@ -142,7 +142,7 @@ const DateTimeDiv: FC<{ time:string, date?: string, tz?: string, stz?: string}> 
   return (
     <section class={style}>
       <header>
-        <h2>Now</h2>
+        <h2>現在時間 <small>（以伺服器時間為準）</small></h2>
         <div class="right">
           {props.tz} {props.stz}
         </div>
@@ -197,14 +197,16 @@ const DataItemsDiv: FC<{ items: Record<string, string> }> = (props) => {
         opacity: 0.7;
         text-transform: uppercase;
         letter-spacing: 0.05em;
+        font-weight: 600;
         color: #555;
       }
 
       p {
         margin: 0.5rem 0 0 0;
-        font-weight: 500;
+        font-weight: 900;
         word-break: break-word;
         color: #111;
+        text-align: center;
       }
 
       /* Dark Mode */
@@ -225,15 +227,25 @@ const DataItemsDiv: FC<{ items: Record<string, string> }> = (props) => {
 
   return (
     <section class={style}>
-      <h2>其他資訊</h2>
+      {/* <h2>其他資訊</h2> */}
 
       {/* 依 items 產生列表 */}
       <ul class={gridClass}>
-        {Object.entries(props.items).map(([key, value]) => (
-          <li class="col-4 card" key={key}>
-            <h3>{key}</h3>
-            <p>{value}</p>
-          </li>
+        <li class="col-6 card" key="asOrganization">
+          <h3>asOrganization</h3>
+          <p>{props.items.asOrganization}</p>
+        </li>
+        <li class="col-6 card" key="asn">
+          <h3>asn</h3>
+          <p>{props.items.asn}</p>
+        </li>
+        {Object.entries(props.items)
+          .filter(([key]) => key !== "asOrganization" && key !== "asn")   // ⬅️ 排除特例
+          .map(([key, value]) => (
+            <li class="col-4 card" key={key}>
+              <h3>{key}</h3>
+              <p>{value}</p>
+            </li>
         ))}
       </ul>
     </section>
@@ -308,7 +320,7 @@ const CommonPage: FC<{ data: any, h2?: string, title?: string, baseData?: object
         font-weight: 600;
         word-break: break-all;
         line-height: 1.2;
-        
+
         @media (min-width: 480px) {
           font-size: 3.5rem;
         }
