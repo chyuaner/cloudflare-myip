@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { Reader } from 'mmdb-lib'; // User needs to install this: npm install mmdb-lib
-import { GeoData } from './types';
+import { GeoData } from './types.js';
 
 let dbReader: Reader | null = null;
 const DB_PATH = path.resolve(process.cwd(), 'GeoLite2-City.mmdb'); // Default path
