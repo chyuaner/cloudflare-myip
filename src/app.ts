@@ -1,6 +1,6 @@
 import { Hono } from "hono";
-import app from "./core/app";
-import { type Variables, type Bindings, type GeoData } from "./core/types";
+import app from "./core/app.js";
+import { type Variables, type Bindings, type GeoData } from "./core/types.js";
 
 const vercelApp = new Hono<{ Bindings: Bindings; Variables: Variables }>();
 

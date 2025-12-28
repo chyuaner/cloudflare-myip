@@ -1,7 +1,7 @@
 import type { FC } from 'hono/jsx'
-import { gridClass, JsonRender, Layout } from './baseHtml'
+import { gridClass, JsonRender, Layout } from './baseHtml.js'
 import { css } from 'hono/css';
-import { isIpv6 } from './data';
+import { isIpv6 } from './data.js';
 
 
 /* ----------------------------------------------------
