@@ -105,7 +105,7 @@ const blockClass = css`
     padding:1rem;
 
     @media (min-width: 640px) {
-      padding:1rem 4rem;
+      padding:1rem 3rem;
     }
   }
   .block-border{border-width:1px;border-style:solid;}
