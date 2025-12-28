@@ -1,5 +1,5 @@
 import type { FC } from 'hono/jsx'
-import { css, Style } from 'hono/css'
+import { css, cx, Style } from 'hono/css'
 
 /* ----------------------------------------------------
 Helper區
@@ -125,6 +125,12 @@ const baseClasses = css`
   }
 `;
 
+const mainClass = css`
+  margin: 50 auto;
+  max-width: 768px;
+  border: 1px solid white;
+`;
+
 
 /* ----------------------------------------------------
 Layout區
@@ -133,20 +139,12 @@ Layout區
 const Layout: FC = (props) => {
   return (
     <Base title={props.title}>
-      <Container class={gridClass}>
-        {props.children}
-      </Container>
-    </Base>
-  )
-}
-
-const Container: FC = (props) => {
-  return (
-    <div id="main">
-      <div class="container">
-        {props.children}
+      <div id="main" class={mainClass}>
+        <div class={cx('container', gridClass)}>
+            {props.children}
+        </div>
       </div>
-    </div>
+    </Base>
   )
 }
 
