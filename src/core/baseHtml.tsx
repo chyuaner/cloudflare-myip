@@ -187,6 +187,7 @@ const GlobalStyle = () => (
       height: 1px;
       background: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0));
       margin: 0.1rem 0;
+      grid-column: span 12;
     }
     @media (prefers-color-scheme: dark) {
       body {
