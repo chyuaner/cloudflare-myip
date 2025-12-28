@@ -160,7 +160,16 @@ Style區
 ---------------------------------------------------- */
 
 const baseStyle = css `
+  @font-face {
+    font-family: 'CustomFont';
+    src: url('/font.woff2') format('woff2');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+  }
+
   body {
+    font-family: 'CustomFont', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
     background: #eceff4;
     background: linear-gradient(135deg,  #f6f8f9 0%, #e5ebee 50%, #d7dee3 56%, #f5f7f9 100%);
     color: #333;

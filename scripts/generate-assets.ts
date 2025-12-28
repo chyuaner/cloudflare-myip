@@ -1,22 +1,27 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import subsetFont from 'subset-font';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.join(__dirname, '..');
 const OUTPUT_FILE = path.join(ROOT, 'src/core/assets.gen.ts');
 
 /**
+ * 子集化用到的文字
+ */
+const SUBSET_TEXT = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!"#$%&\'()*+,-./:;<=>?@[\\]^_`{|}~ 你目前的IP：現在時間（以伺服器時間為準）你的IP是：經度緯度其他資訊查看公網📌';
+
+/**
  * 資產設定：
  * - key: 產出物件中的鍵名
  * - path: 原始路徑 (相對於 ROOT)
  * - generateIco: 是否要額外產生 .ico 版本 (僅限 PNG)
+ * - subset: 是否要進行子集化與 woff2 壓縮 (僅限字體)
  */
 const ASSET_CONFIG = [
   { key: 'favicon', path: 'src/core/favicon.png', generateIco: true },
-  // 可以在這裡輕鬆增加更多圖片
-  // { key: 'logo', path: 'src/core/logo.png' },
-  // { key: 'bg_map', path: 'src/core/map.jpg' },
+  { key: 'font', path: 'src/core/font.ttf', subset: true },
 ];
 
 /**
@@ -36,7 +41,7 @@ function pngToIcoBuffer(pngBuffer: Buffer): Buffer {
   return Buffer.concat([header, entry, pngBuffer]);
 }
 
-function run() {
+async function run() {
   const results: Record<string, string> = {};
 
   for (const asset of ASSET_CONFIG) {
@@ -47,12 +52,22 @@ function run() {
       continue;
     }
 
-    const buffer = fs.readFileSync(fullPath);
-    const base64 = buffer.toString('base64');
-    
-    // 取得附檔名
+    let buffer = fs.readFileSync(fullPath);
     const ext = path.extname(asset.path).slice(1).toLowerCase();
-    results[`${asset.key}_${ext}`] = base64;
+
+    if (asset.subset && (ext === 'ttf' || ext === 'otf' || ext === 'woff')) {
+      console.log(`🔡 Subsetting font: ${asset.path}...`);
+      try {
+        buffer = Buffer.from(await subsetFont(buffer, SUBSET_TEXT, { targetFormat: 'woff2' }));
+        results[`${asset.key}_woff2`] = buffer.toString('base64');
+      } catch (err) {
+        console.error(`❌ Failed to subset font ${asset.path}:`, err);
+        // Fallback to original
+        results[`${asset.key}_${ext}`] = buffer.toString('base64');
+      }
+    } else {
+      results[`${asset.key}_${ext}`] = buffer.toString('base64');
+    }
 
     if (asset.generateIco && ext === 'png') {
       const icoBuffer = pngToIcoBuffer(buffer);
@@ -82,4 +97,4 @@ ${Object.entries(results).map(([key, val]) => `  ${key}: "${val}",`).join('\n')}
   console.log(`✅ Assets generated to ${OUTPUT_FILE}`);
 }
 
-run();
+run().catch(console.error);

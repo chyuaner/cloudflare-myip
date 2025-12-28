@@ -34,6 +34,11 @@ app.get("/favicon.ico", (c) => {
   return c.body(asset.body, 200, asset.headers);
 });
 
+app.get("/font.woff2", (c) => {
+  const asset = serveBase64(ASSETS.font_woff2, "font/woff2");
+  return c.body(asset.body, 200, asset.headers);
+});
+
 app.all("/", (c) => {
   // const geo = c.var.geo;
   // return c.json(geo);
