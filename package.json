@@ -7,7 +7,6 @@
 		"dev:vercel": "vercel dev",
 		"start": "tsx src/node.ts",
 		"start:node": "tsx src/node.ts",
-		"build": "tsc",
 		"deploy": "wrangler deploy --minify",
 		"cf-typegen": "wrangler types --env-interface CloudflareBindings"
 	},
