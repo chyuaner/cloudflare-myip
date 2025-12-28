@@ -2,6 +2,7 @@ import { Hono } from "hono";
 import { type Variables, type Bindings } from "./types.js";
 import DataUtils from "./data.js";
 import { CommonPage } from "./html.js";
+import { Context, Env } from "hono";
 const DEFAULT_TZ = 'Asia/Taipei';
 
 const app = new Hono<{ Bindings: Bindings; Variables: Variables }>();
@@ -29,6 +30,34 @@ app.get("/", (c) => {
 //   return c.text(c.var.geo.ip)
 // });
 
+function commonResponse<T extends Env = {}>(c: Context<T>, output: any) {
+  let outputText = output;
+
+  // 若沒有對應的值（常見於 Cloudflare Workers 的 `cf` 內可能缺少某欄位），回 404
+  if (output === undefined) {
+    outputText = 'null';
+  }
+
+  // 檢查 Accept header 是否包含 text/html
+  const acceptHeader = c.req.header("Accept") || "";
+  if (acceptHeader.includes("text/html")) {
+    // 這裡可以使用模板引擎（ejs、pug、handlebars …）或直接回傳字串
+    const html = CommonPage({ data: outputText });
+    return c.html(html?.toString() || "");
+  }
+
+  // 若 outputText 為 object (且非 null) 或是 array，使用 JSON 回傳
+  if (
+    (typeof outputText === "object" && outputText !== null) ||
+    Array.isArray(outputText)
+  ) {
+    return c.json(outputText);
+  }
+
+  // 其他情況（字串、數字、null、undefined）回傳純文字
+  return c.text(String(outputText));
+}
+
 app.all(
   '/:field{(ip|hostname|colo|country|city|continent|latitude|longitude|asn|asOrganization|isEUCountry|postalCode|metroCode|region|regionCode|timezone)}',
   (c) => {
@@ -40,38 +69,31 @@ app.all(
     // 注意：`c.var.geo` 在 TypeScript 中的型別預設是 `any`，若想要更嚴格可自行宣告介面
     const data = new DataUtils(c).getData();
     const value = (data as Record<string, unknown>)[field];
-
-    // 若沒有對應的值（常見於 Cloudflare Workers 的 `cf` 內可能缺少某欄位），回 404
-    if (value === undefined) {
-      return c.text('null');
-    }
-
-    // 直接回傳文字（如果想回 JSON，可改成 `c.json({ field, value })`）
-    return c.text(String(value));
+    return commonResponse(c, value);
 });
 
 app.on('ALL', ["/now", '/now/local'], (c) => {
   const dataUtils = new DataUtils(c);
   dataUtils.setDefaultTz(DEFAULT_TZ);
   const now = dataUtils.getNow();
-  return c.text(now);
+  return commonResponse(c, now);
 });
 app.on('ALL', ["/now/", '/now/local/'], (c) => {
   const dataUtils = new DataUtils(c);
   dataUtils.setDefaultTz(DEFAULT_TZ);
   const nowArray = dataUtils.getNowArray();
-  return c.json(nowArray);
+  return commonResponse(c, nowArray);
 });
 
 app.on('ALL', ["/utc", '/now/utc'], (c) => {
   const now = new DataUtils(c).getUtc();
-  return c.text(now);
+  return commonResponse(c, now);
 });
 app.on('ALL', ["/utc/", '/now/utc/'], (c) => {
   const dataUtils = new DataUtils(c);
   dataUtils.setTz('UTC');
   const nowArray = dataUtils.getNowArray();
-  return c.json(nowArray);
+  return commonResponse(c, nowArray);
 });
 
 export default app;
