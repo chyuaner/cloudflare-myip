@@ -302,6 +302,39 @@ const IndexPage: FC<{ data: any, title?: string, baseData?: object }> = (props) 
   );
 }
 
+const IpPage: FC<{ data: any, title?: string, baseData?: object }> = (props) => {
+  return (
+    <Layout title={props.title}>
+
+      <div class="block col-12">
+        <IpDiv
+          ip = {props.data.ip}
+          longitude = {props.data.longitude}
+          latitude = {props.data.latitude}
+        />
+      </div>
+      <hr />
+      <div class="block col-12">
+        <DataItemsDiv items={{
+          asOrganization: props.data.asOrganization,
+          asn           : props.data.asn,
+          country       : props.data.country,
+          city          : props.data.city,
+          continent     : props.data.continent,
+          region        : props.data.region,
+          regionCode    : props.data.regionCode,
+          timezone      : props.data.timezone,
+          isEUCountry   : props.data.isEUCountry,
+          postalCode    : props.data.postalCode,
+          metroCode     : props.data.metroCode,
+        }}
+        />
+      </div>
+
+    </Layout>
+  );
+}
+
 const CommonPage: FC<{ data: any, h2?: string, title?: string, baseData?: object }> = (props) => {
   const isSimple = typeof props.data !== 'object' || props.data === null;
 
@@ -359,4 +392,4 @@ const CommonPage: FC<{ data: any, h2?: string, title?: string, baseData?: object
   )
 }
 
-export { IndexPage, CommonPage }
+export { IndexPage, CommonPage, IpPage }

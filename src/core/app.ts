@@ -1,7 +1,7 @@
 import { Hono, Context, Env } from "hono";
 import { type Variables, type Bindings } from "./types.js";
 import DataUtils from "./data.js";
-import { IndexPage, CommonPage } from "./html.js";
+import { IndexPage, CommonPage, IpPage } from "./html.js";
 import { ASSETS } from "./assets.gen";
 
 const DEFAULT_TZ = 'Asia/Taipei';
@@ -34,7 +34,7 @@ app.get("/favicon.ico", (c) => {
   return c.body(asset.body, 200, asset.headers);
 });
 
-app.get("/", (c) => {
+app.all("/", (c) => {
   // const geo = c.var.geo;
   // return c.json(geo);
 
@@ -93,9 +93,24 @@ app.get('/background', async (c) => {
   });
 })
 
-// app.all("/ip", (c) => {
-//   return c.text(c.var.geo.ip)
-// });
+app.all("/ip", (c) => {
+  // return c.text(c.var.geo.ip)
+
+  const dataUtils = new DataUtils(c);
+  const data = dataUtils.getHostData();
+
+  // 檢查 Accept header 是否包含 text/html
+  const acceptHeader = c.req.header("Accept") || "";
+  if (acceptHeader.includes("text/html")) {
+
+    const title = '你的IP是: ' + data.ip;
+
+    const html = IpPage({ title, data });
+    return c.html(html?.toString() || "");
+  }
+
+  return c.text(data.ip);
+});
 
 function commonResponse<T extends Env = {}>(c: Context<T>, output: any, field?: string, title?: string) {
   let outputText = output;
@@ -135,7 +150,7 @@ function commonResponse<T extends Env = {}>(c: Context<T>, output: any, field?: 
 }
 
 app.all(
-  '/:field{(ip|hostname|colo|country|city|continent|latitude|longitude|asn|asOrganization|isEUCountry|postalCode|metroCode|region|regionCode|timezone)}',
+  '/:field{(hostname|colo|country|city|continent|latitude|longitude|asn|asOrganization|isEUCountry|postalCode|metroCode|region|regionCode|timezone)}',
   (c) => {
 
     // 取得路徑參數 `field`
