@@ -1,6 +1,6 @@
 import type { FC } from 'hono/jsx'
 import { gridClass, JsonRender, Layout } from './baseHtml.js'
-import { css } from 'hono/css';
+import { css, cx } from 'hono/css';
 import { isIpv6 } from './data.js';
 
 
@@ -278,17 +278,57 @@ const IndexPage: FC<{ data: any, title?: string, baseData?: object }> = (props) 
 }
 
 const CommonPage: FC<{ data: any, h2?: string, title?: string, baseData?: object }> = (props) => {
+  const isSimple = typeof props.data !== 'object' || props.data === null;
+
+  const style = css `
+    h2 {
+      font-size: 1rem;
+      opacity: 0.7;
+      margin-bottom: 2rem;
+    }
+
+    .main-text {
+      text-align: center;
+      p {
+        margin: 2rem 0;
+        font-size: 2.5rem;
+        font-weight: 600;
+        word-break: break-all;
+        line-height: 1.2;
+        
+        @media (min-width: 480px) {
+          font-size: 3.5rem;
+        }
+      }
+    }
+
+    .json-container {
+      text-align: left;
+      // background: rgba(0, 0, 0, 0.05);
+      padding: 1rem;
+      border-radius: 12px;
+      font-size: 1.1rem;
+    }
+  `;
+
   return (
     <Layout title={props.title}>
-      <section class="block col-12">
-        {/* {props.baseData?.ip && <h1>你的IP: {props.baseData.ip}</h1>} */}
-        {props.h2 && <h2>{props.h2}</h2>}
-
-        <div class="block col-12">
-          <section>
-            <JsonRender value={props.data} />
-          </section>
-        </div>
+      <section class={cx(style, "block col-12")}>
+        <header>
+          {/* {props.baseData?.ip && <h1>你的IP: {props.baseData.ip}</h1>} */}
+          {props.h2 && <h2>{props.h2}</h2>}
+        </header>
+        <main>
+          <div class="main-text">
+            {isSimple ? (
+              <p>{String(props.data)}</p>
+            ) : (
+              <section class="json-container">
+                <JsonRender value={props.data} />
+              </section>
+            )}
+          </div>
+        </main>
       </section>
     </Layout>
   )
