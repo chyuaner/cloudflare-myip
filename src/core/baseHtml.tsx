@@ -186,10 +186,10 @@ const baseStyle = css `
 const appBackgroundStyle = css `
   background: url('/background') no-repeat center center;
   background-size: cover;
-  
+
   @media (prefers-color-scheme: dark) {
-    background: url('/background?dark=true') no-repeat center center;
-    background-size: cover;
+    // background: url('/background?dark=true') no-repeat center center;
+    // background-size: cover;
     filter: invert(1) hue-rotate(180deg) brightness(0.8);
   }
 `;
