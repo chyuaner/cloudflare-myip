@@ -143,8 +143,42 @@ const DataItemsDiv: FC<{ items: Record<string, string> }> = (props) => {
   const style = css `
     h2 {
       font-size: 1rem;
+      margin-bottom: 1rem;
+      opacity: 0.9;
     }
 
+    ul {
+      padding-left: 0;
+      gap: 1rem;
+    }
+
+    .card {
+      background: rgba(255, 255, 255, 0.05);
+      padding: 1rem;
+      border-radius: 16px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      transition: all 0.3s ease;
+      list-style: none;
+      
+      &:hover {
+        background: rgba(255, 255, 255, 0.1);
+        transform: translateY(-2px);
+      }
+
+      h3 {
+        margin: 0;
+        font-size: 0.85rem;
+        opacity: 0.7;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+      }
+      
+      p {
+        margin: 0.5rem 0 0 0;
+        font-weight: 500;
+        word-break: break-word;
+      }
+    }
   `;
 
   return (

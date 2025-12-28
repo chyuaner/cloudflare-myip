@@ -162,14 +162,21 @@ Style區
 ---------------------------------------------------- */
 
 const baseStyle = css `
-  body { background: #fafafa; }
+  body { background: #fafafa; color: #333; }
   @media (prefers-color-scheme: dark) {
     body { background: #303341; color: white;}
   }
 `;
 
 const mainStyle = css`
-  border: 1px solid white;
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 24px;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  color: white; /* Force white text for glassmorphism usually */
+  text-shadow: 0 1px 3px rgba(0,0,0,0.2);
 `;
 
 const blockStyle = css`
