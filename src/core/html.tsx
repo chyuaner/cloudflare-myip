@@ -124,11 +124,12 @@ const DateTimeDiv: FC<{ time:string, date?: string, tz?: string, stz?: string}> 
       </header>
       <main>
         <div class="main-text">
-          <p>{props.time}</p>
+          <p id="time-now">{props.time}</p>
           {/* <p>22:22:22</p> */}
+          <script dangerouslySetInnerHTML={{ __html: `(function(){var e=document.getElementById("time-now"),t=document.getElementById("date-now");if(!e||!t)return;var n=e.innerText.trim().split(":"),r=t.innerText.trim().split("/");if(3!==n.length||3!==r.length)return;var a=parseInt(r[0],10),i=parseInt(r[1],10)-1,o=parseInt(r[2],10),c=parseInt(n[0],10),d=parseInt(n[1],10),s=parseInt(n[2],10),u=new Date(a,i,o,c,d,s),l=Date.now(),m=function(e){return e.toString().padStart(2,"0")};setInterval((function(){var n=Date.now()-l,r=new Date(u.getTime()+n);e.innerText=[r.getHours(),r.getMinutes(),r.getSeconds()].map(m).join(":"),t.innerText=[r.getFullYear(),m(r.getMonth()+1),m(r.getDate())].join("/")}),1e3)})();` }} />
         </div>
 
-        <div class="submain-text right">
+        <div class="submain-text right" id="date-now">
           {props.date}
         </div>
       </main>
