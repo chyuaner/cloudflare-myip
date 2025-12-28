@@ -44,7 +44,9 @@ const IpDiv: FC<{ ip:string, longitude?: string, latitude?: string}> = (props) =
           width: max-content;
 
           @media (min-width: 640px) {
-            margin-right: 2rem;
+            &:not(:first-child) {
+              margin-left: 3rem;
+            }
           }
 
         }
