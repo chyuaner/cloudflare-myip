@@ -1,7 +1,7 @@
 import { Hono } from "hono";
-import { type Variables, type Bindings } from "./types.js";
-import DataUtils from "./data.js";
-import { IndexPage, CommonPage } from "./html.js";
+import { type Variables, type Bindings } from "./types";
+import DataUtils from "./data";
+import { IndexPage, CommonPage } from "./html";
 import { Context, Env } from "hono";
 const DEFAULT_TZ = 'Asia/Taipei';
 
