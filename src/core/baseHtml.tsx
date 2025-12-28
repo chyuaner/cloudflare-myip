@@ -125,7 +125,7 @@ const appBackgroundClass = css `
 
 
   @media (prefers-color-scheme: light) {
-    background: url('https:/fimg.yuaner.tw/background/morphogenesis-l.svg') no-repeat center center;
+    background: url('https://fimg.yuaner.tw/background/morphogenesis-l.svg') no-repeat center center;
     background-size: cover;
   }
 `
