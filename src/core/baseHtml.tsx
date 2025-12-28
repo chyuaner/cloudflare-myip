@@ -220,12 +220,21 @@ const Layout: FC = (props) => {
 }
 
 const appBackgroundStyle = css `
-  background: url('/background') no-repeat center center;
+  background-image: url('/background');
+  background-repeat: no-repeat;
+  background-position: center center;
   background-size: cover;
+  opacity: 0;
+  transform: scale(1.3); /* 從 1.15 倍放大開始 */
+  transition: opacity 3s ease-out, transform 3s cubic-bezier(0.16, 1, 0.3, 1); /* 柔和的 1.8 秒動畫 */
+
+  &.loaded {
+    opacity: 1;
+    transform: scale(1); /* 縮回原大小 */
+  }
 
   @media (prefers-color-scheme: dark) {
-    background: url('/background?dark=true') no-repeat center center;
-    background-size: cover;
+    background-image: url('/background?dark=true');
   }
 `;
 
@@ -260,6 +269,29 @@ const Base: FC = (props) => {
     <body>
       <div id="background" class={cx(appBackgroundClass, appBackgroundStyle)}>
       </div>
+
+      <script dangerouslySetInnerHTML={{ __html: `
+        (function() {
+          const bg = document.getElementById('background');
+          const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          const url = isDark ? '/background?dark=true' : '/background';
+          const img = new Image();
+          img.onload = function() {
+            bg.classList.add('loaded');
+          };
+          img.onerror = function() {
+            bg.classList.add('loaded'); // 即使失敗也顯示
+          };
+          img.src = url;
+          // 如果已經在快取中
+          if (img.complete) img.onload();
+          
+          // 安全機制：最晚 2.5 秒後一定要顯示
+          setTimeout(() => {
+            bg.classList.add('loaded');
+          }, 2500);
+        })();
+      ` }} />
 
       <main id="app-content" class={appContentClass}>
         {props.children}
