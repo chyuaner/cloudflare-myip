@@ -100,7 +100,14 @@ const gridClass = css`
 `;
 
 const blockClass = css`
-  .block{margin:0.5rem 0;padding:1rem;word-break: break-all;}
+  .block{
+    margin:0.5rem 0;
+    padding:1rem;
+
+    @media (min-width: 640px) {
+      padding:1rem 4rem;
+    }
+  }
   .block-border{border-width:1px;border-style:solid;}
 `;
 
@@ -142,8 +149,12 @@ const appContentClass = css `
 
 const mainClass = css`
   width: 100%;
-  margin: 2rem;
+  margin: 1rem;
   max-width: 768px;
+
+  @media (min-width: 480px) {
+    margin: 2rem;
+  }
 `;
 
 /* ----------------------------------------------------
