@@ -9,9 +9,27 @@ const ROOT = path.join(__dirname, '..');
 const OUTPUT_FILE = path.join(ROOT, 'src/core/assets.gen.ts');
 
 /**
- * 子集化用到的文字
+ * 自動從原始碼中提取所有出現過的字元，用於字體子集化
  */
-const SUBSET_TEXT = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!"#$%&\'()*+,-./:;<=>?@[\\]^_`{|}~ 你目前的IP：現在時間（以伺服器時間為準）你的IP是：經度緯度其他資訊查看公網📌';
+function collectTextFromFiles(): string {
+  const sourceFiles = [
+    path.join(ROOT, 'src/core/html.tsx'),
+    path.join(ROOT, 'src/core/baseHtml.tsx'),
+    path.join(ROOT, 'src/core/app.ts'),
+  ];
+  
+  // 基礎字集：英數字、常用符號
+  let allText = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!"#$%&\'()*+,-./:;<=>?@[\\]^_`{|}~ ';
+  
+  for (const file of sourceFiles) {
+    if (fs.existsSync(file)) {
+      allText += fs.readFileSync(file, 'utf-8');
+    }
+  }
+  
+  // 移除重複字元並過濾掉控制字元與程式碼保留字（非必要，但能精簡字串）
+  return Array.from(new Set(allText.split(''))).join('');
+}
 
 /**
  * 資產設定：
@@ -44,6 +62,9 @@ function pngToIcoBuffer(pngBuffer: Buffer): Buffer {
 
 async function run() {
   const results: Record<string, string> = {};
+  const subsetText = collectTextFromFiles();
+  
+  console.log(`🔍 Scanning source files... Found ${subsetText.length} unique characters.`);
 
   for (const asset of ASSET_CONFIG) {
     const fullPath = path.join(ROOT, asset.path);
@@ -59,7 +80,7 @@ async function run() {
     if (asset.subset && (ext === 'ttf' || ext === 'otf' || ext === 'woff')) {
       console.log(`🔡 Subsetting font: ${asset.path}...`);
       try {
-        buffer = Buffer.from(await subsetFont(buffer, SUBSET_TEXT, { targetFormat: 'woff2' }));
+        buffer = Buffer.from(await subsetFont(buffer, subsetText, { targetFormat: 'woff2' }));
         results[`${asset.key}_woff2`] = buffer.toString('base64');
       } catch (err) {
         console.error(`❌ Failed to subset font ${asset.path}:`, err);
