@@ -1,5 +1,5 @@
 import type { FC } from 'hono/jsx'
-import { gridClass, JsonRender, Layout } from './baseHtml.js'
+import { gridClass, JsonRender, Layout, type BaseData } from './baseHtml.js'
 import { css, cx } from 'hono/css';
 import { isIpv6 } from './data.js';
 
@@ -256,9 +256,16 @@ const DataItemsDiv: FC<{ items: Record<string, string> }> = (props) => {
 /* ----------------------------------------------------
 Pages 區
 ---------------------------------------------------- */
-const IndexPage: FC<{ data: any, title?: string, baseData?: object }> = (props) => {
+const IndexPage: FC<{ data: any, title?: string, baseData?: BaseData }> = (props) => {
   return (
-    <Layout title={props.title}>
+    <Layout 
+      title={props.title}
+      baseData={{
+        ...props.baseData,
+        longitude: props.data.longitude,
+        latitude: props.data.latitude,
+      }}
+    >
 
       <div class="block col-12">
         <IpDiv
@@ -302,9 +309,16 @@ const IndexPage: FC<{ data: any, title?: string, baseData?: object }> = (props) 
   );
 }
 
-const IpPage: FC<{ data: any, title?: string, baseData?: object }> = (props) => {
+const IpPage: FC<{ data: any, title?: string, baseData?: BaseData }> = (props) => {
   return (
-    <Layout title={props.title}>
+    <Layout 
+      title={props.title}
+      baseData={{
+        ...props.baseData,
+        longitude: props.data.longitude,
+        latitude: props.data.latitude,
+      }}
+    >
 
       <div class="block col-12">
         <IpDiv
@@ -335,7 +349,7 @@ const IpPage: FC<{ data: any, title?: string, baseData?: object }> = (props) => 
   );
 }
 
-const CommonPage: FC<{ data: any, h2?: string, title?: string, baseData?: object }> = (props) => {
+const CommonPage: FC<{ data: any, h2?: string, title?: string, baseData?: BaseData }> = (props) => {
   const isSimple = typeof props.data !== 'object' || props.data === null;
 
   const style = css `
@@ -370,7 +384,10 @@ const CommonPage: FC<{ data: any, h2?: string, title?: string, baseData?: object
   `;
 
   return (
-    <Layout title={props.title}>
+    <Layout 
+      title={props.title}
+      baseData={props.baseData}
+    >
       <section class={cx(style, "block col-12")}>
         <header>
           {/* {props.baseData?.ip && <h1>你的IP: {props.baseData.ip}</h1>} */}

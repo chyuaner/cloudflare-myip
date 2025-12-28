@@ -174,9 +174,15 @@ function commonResponse<T extends Env = {}>(c: Context<T>, output: any, field?: 
       : (isSimple ? String(outputText) : undefined);
     const h2 = field;
 
+    const hostData = new DataUtils(c).getHostData();
+
     const html = CommonPage({
       data: outputText,
       h2,
+      baseData: {
+        longitude: hostData.longitude,
+        latitude: hostData.latitude,
+      },
       ...(titleText ? { title: titleText } : {})
     });
     return c.html(html?.toString() || "");

@@ -1,4 +1,4 @@
-import type { FC } from 'hono/jsx'
+import type { FC, PropsWithChildren } from 'hono/jsx'
 import { css, cx, Style } from 'hono/css'
 import { ASSETS } from './assets.gen.js'
 
@@ -206,10 +206,15 @@ const GlobalStyle = () => (
 /* ----------------------------------------------------
 Layout區
 ---------------------------------------------------- */
+export interface BaseData {
+  longitude?: string;
+  latitude?: string;
+  [key: string]: any;
+}
 
-const Layout: FC = (props) => {
+const Layout: FC<PropsWithChildren<{ title?: string, baseData?: BaseData }>> = (props) => {
   return (
-    <Base title={props.title}>
+    <Base title={props.title} baseData={props.baseData}>
       <div id="main" class={cx(mainClass, mainStyle)}>
         <div class={cx('container', gridClass, blockClass)}>
             {props.children}
@@ -220,21 +225,16 @@ const Layout: FC = (props) => {
 }
 
 const appBackgroundStyle = css `
-  background-image: url('/background');
   background-repeat: no-repeat;
   background-position: center center;
   background-size: cover;
   opacity: 0;
-  transform: scale(1.3); /* 從 1.15 倍放大開始 */
-  transition: opacity 3s ease-out, transform 3s cubic-bezier(0.16, 1, 0.3, 1); /* 柔和的 1.8 秒動畫 */
+  transform: scale(1.3); /* 從 1.3 倍放大開始 */
+  transition: opacity 3s ease-out, transform 3s cubic-bezier(0.16, 1, 0.3, 1); /* 柔和的 3 秒動畫 */
 
   &.loaded {
     opacity: 1;
     transform: scale(1); /* 縮回原大小 */
-  }
-
-  @media (prefers-color-scheme: dark) {
-    background-image: url('/background?dark=true');
   }
 `;
 
@@ -256,7 +256,16 @@ const mainStyle = css`
 `;
 
 
-const Base: FC = (props) => {
+const Base: FC<PropsWithChildren<{ title?: string, baseData?: BaseData }>> = (props) => {
+  const { longitude, latitude } = props.baseData || {};
+  const params = [
+    longitude ? `longitude=${longitude}` : '',
+    latitude ? `latitude=${latitude}` : ''
+  ].filter(Boolean).join('&');
+  
+  const lightBg = `/background${params ? `?${params}` : ''}`;
+  const darkBg = `/background?dark=true${params ? `&${params}` : ''}`;
+
   return (
     <html lang="zh-tw" class={baseClasses}>
     <head>
@@ -265,6 +274,23 @@ const Base: FC = (props) => {
       <title>{props.title ?? '查看你的公網IP'}</title>
       <Style />
       <GlobalStyle />
+      {/* 這裡是後端直接輸出的 CSS，確保 No-JS 也能抓到正確網址 */}
+      <style dangerouslySetInnerHTML={{ __html: `
+        #background {
+          background-image: url('${lightBg}');
+        }
+        @media (prefers-color-scheme: dark) {
+          #background {
+            background-image: url('${darkBg}');
+          }
+        }
+      ` }} />
+      {/* 如果關閉 JS，強制顯示背景 */}
+      <noscript>
+        <style dangerouslySetInnerHTML={{ __html: `
+          #background { opacity: 1 !important; transform: scale(1) !important; }
+        ` }} />
+      </noscript>
     </head>
     <body>
       <div id="background" class={cx(appBackgroundClass, appBackgroundStyle)}>
@@ -274,12 +300,20 @@ const Base: FC = (props) => {
         (function() {
           const bg = document.getElementById('background');
           const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-          const url = isDark ? '/background?dark=true' : '/background';
+          const longitude = "${props.baseData?.longitude || ''}";
+          const latitude = "${props.baseData?.latitude || ''}";
+          
+          let url = isDark ? '/background?dark=true' : '/background';
+          if (longitude) url += (url.includes('?') ? '&' : '?') + 'longitude=' + longitude;
+          if (latitude) url += (url.includes('?') ? '&' : '?') + 'latitude=' + latitude;
+
           const img = new Image();
           img.onload = function() {
+            bg.style.backgroundImage = 'url(' + url + ')';
             bg.classList.add('loaded');
           };
           img.onerror = function() {
+            bg.style.backgroundImage = 'url(' + url + ')';
             bg.classList.add('loaded'); // 即使失敗也顯示
           };
           img.src = url;
@@ -288,7 +322,10 @@ const Base: FC = (props) => {
           
           // 安全機制：最晚 2.5 秒後一定要顯示
           setTimeout(() => {
-            bg.classList.add('loaded');
+            if (!bg.classList.contains('loaded')) {
+              bg.style.backgroundImage = 'url(' + url + ')';
+              bg.classList.add('loaded');
+            }
           }, 2500);
         })();
       ` }} />
