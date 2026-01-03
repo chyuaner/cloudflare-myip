@@ -354,9 +354,13 @@ const DatePage: FC<{ data: any, title?: string, baseData?: BaseData }> = (props)
     <Layout
       title={props.title}
       baseData={{
-        ...props.baseData,
-        longitude: props.data.longitude,
-        latitude: props.data.latitude,
+        ...(props.baseData ?? {}),
+        ...(props.baseData?.longitude != null && {
+          longitude: props.baseData.longitude,
+        }),
+        ...(props.baseData?.latitude != null && {
+          latitude: props.baseData.latitude,
+        }),
       }}
     >
 

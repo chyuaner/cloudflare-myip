@@ -224,7 +224,11 @@ app.on('ALL', ["/now", '/now/local'], (c) => {
 
     const title = '現在時間: ' + nowData.time + ' ' + nowData.stz;
 
-    const html = DatePage({ title, data: { now: nowData }});
+    const hostData = new DataUtils(c).getHostData();
+    const html = DatePage({ title, data: { now: nowData }, baseData: {
+      longitude: hostData.longitude,
+      latitude: hostData.latitude,
+    }});
     return c.html(html?.toString() || "");
   }
 
@@ -247,7 +251,11 @@ app.on('ALL', ["/utc", '/now/utc'], (c) => {
 
     const title = '現在時間: ' + nowData.time + ' ' + nowData.stz;
 
-    const html = DatePage({ title, data: { now: nowData }});
+    const hostData = new DataUtils(c).getHostData();
+    const html = DatePage({ title, data: { now: nowData }, baseData: {
+      longitude: hostData.longitude,
+      latitude: hostData.latitude,
+    }});
     return c.html(html?.toString() || "");
   }
 
