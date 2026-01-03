@@ -71,7 +71,7 @@ class DataUtils {
     return now;
   }
 
-  getTz(): string | null {
+  getTz(): string {
     return this.tz ?? this.honoC.var.geo.timezone ?? this.defaultTz ?? 'UTC';
   }
 
