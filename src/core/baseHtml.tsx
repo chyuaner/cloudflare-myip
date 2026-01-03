@@ -215,6 +215,7 @@ export interface BaseData {
 const Footer = () => {
   const style = css `
     padding: 0 1rem;
+    margin-top: 1rem;
     @media (min-width: 480px) {
         div.right {
             text-align: right;
