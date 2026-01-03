@@ -262,7 +262,7 @@ const Base: FC<PropsWithChildren<{ title?: string, baseData?: BaseData }>> = (pr
     longitude ? `longitude=${longitude}` : '',
     latitude ? `latitude=${latitude}` : ''
   ].filter(Boolean).join('&');
-  
+
   const lightBg = `/background${params ? `?${params}` : ''}`;
   const darkBg = `/background?dark=true${params ? `&${params}` : ''}`;
 
@@ -302,7 +302,7 @@ const Base: FC<PropsWithChildren<{ title?: string, baseData?: BaseData }>> = (pr
           const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
           const longitude = "${props.baseData?.longitude || ''}";
           const latitude = "${props.baseData?.latitude || ''}";
-          
+
           let url = isDark ? '/background?dark=true' : '/background';
           if (longitude) url += (url.includes('?') ? '&' : '?') + 'longitude=' + longitude;
           if (latitude) url += (url.includes('?') ? '&' : '?') + 'latitude=' + latitude;
@@ -319,14 +319,14 @@ const Base: FC<PropsWithChildren<{ title?: string, baseData?: BaseData }>> = (pr
           img.src = url;
           // 如果已經在快取中
           if (img.complete) img.onload();
-          
-          // 安全機制：最晚 2.5 秒後一定要顯示
+
+          // 安全機制：最晚 3 秒後一定要顯示
           setTimeout(() => {
             if (!bg.classList.contains('loaded')) {
               bg.style.backgroundImage = 'url(' + url + ')';
               bg.classList.add('loaded');
             }
-          }, 2500);
+          }, 3000);
         })();
       ` }} />
 
