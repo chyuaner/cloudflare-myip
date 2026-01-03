@@ -251,10 +251,9 @@ app.on('ALL', ["/utc", '/now/utc'], (c) => {
 
     const title = '現在時間: ' + nowData.time + ' ' + nowData.stz;
 
-    const hostData = new DataUtils(c).getHostData();
     const html = DatePage({ title, data: { now: nowData }, baseData: {
-      longitude: hostData.longitude,
-      latitude: hostData.latitude,
+      longitude: '0.0005',
+      latitude: '51.4769',
     }});
     return c.html(html?.toString() || "");
   }
