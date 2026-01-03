@@ -258,7 +258,7 @@ Pages 區
 ---------------------------------------------------- */
 const IndexPage: FC<{ data: any, title?: string, baseData?: BaseData }> = (props) => {
   return (
-    <Layout 
+    <Layout
       title={props.title}
       baseData={{
         ...props.baseData,
@@ -311,7 +311,7 @@ const IndexPage: FC<{ data: any, title?: string, baseData?: BaseData }> = (props
 
 const IpPage: FC<{ data: any, title?: string, baseData?: BaseData }> = (props) => {
   return (
-    <Layout 
+    <Layout
       title={props.title}
       baseData={{
         ...props.baseData,
@@ -342,6 +342,30 @@ const IpPage: FC<{ data: any, title?: string, baseData?: BaseData }> = (props) =
           postalCode    : props.data.postalCode,
           metroCode     : props.data.metroCode,
         }}
+        />
+      </div>
+
+    </Layout>
+  );
+}
+
+const DatePage: FC<{ data: any, title?: string, baseData?: BaseData }> = (props) => {
+  return (
+    <Layout
+      title={props.title}
+      baseData={{
+        ...props.baseData,
+        longitude: props.data.longitude,
+        latitude: props.data.latitude,
+      }}
+    >
+
+      <div class="block col-12">
+        <DateTimeDiv
+          time = {props.data.now.time}
+          date = {props.data.now.date}
+          tz = {props.data.now.tz}
+          stz = {props.data.now.stz}
         />
       </div>
 
@@ -384,7 +408,7 @@ const CommonPage: FC<{ data: any, h2?: string, title?: string, baseData?: BaseDa
   `;
 
   return (
-    <Layout 
+    <Layout
       title={props.title}
       baseData={props.baseData}
     >
@@ -409,4 +433,4 @@ const CommonPage: FC<{ data: any, h2?: string, title?: string, baseData?: BaseDa
   )
 }
 
-export { IndexPage, CommonPage, IpPage }
+export { IndexPage, CommonPage, IpPage, DatePage }

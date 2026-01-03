@@ -1,7 +1,7 @@
 import { Hono, Context, Env } from "hono";
 import { type Variables, type Bindings } from "./types.js";
 import DataUtils from "./data.js";
-import { IndexPage, CommonPage, IpPage } from "./html.js";
+import { IndexPage, CommonPage, IpPage, DatePage } from "./html.js";
 import { ASSETS } from "./assets.gen.js";
 
 const DEFAULT_TZ = 'Asia/Taipei';
@@ -217,6 +217,17 @@ app.all(
 app.on('ALL', ["/now", '/now/local'], (c) => {
   const dataUtils = new DataUtils(c);
   dataUtils.setDefaultTz(DEFAULT_TZ);
+
+  const acceptHeader = c.req.header("Accept") || "";
+  if (acceptHeader.includes("text/html")) {
+    const nowData = dataUtils.getNowArray();
+
+    const title = '現在時間: ' + nowData.time + ' ' + nowData.stz;
+
+    const html = DatePage({ title, data: { now: nowData }});
+    return c.html(html?.toString() || "");
+  }
+
   const now = dataUtils.getNow();
   return commonResponse(c, now);
 });
@@ -228,6 +239,18 @@ app.on('ALL', ["/now/", '/now/local/'], (c) => {
 });
 
 app.on('ALL', ["/utc", '/now/utc'], (c) => {
+  const acceptHeader = c.req.header("Accept") || "";
+  if (acceptHeader.includes("text/html")) {
+    const dataUtils = new DataUtils(c);
+    dataUtils.setTz('UTC');
+    const nowData = dataUtils.getNowArray();
+
+    const title = '現在時間: ' + nowData.time + ' ' + nowData.stz;
+
+    const html = DatePage({ title, data: { now: nowData }});
+    return c.html(html?.toString() || "");
+  }
+
   const now = new DataUtils(c).getUtc();
   return commonResponse(c, now);
 });

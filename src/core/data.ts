@@ -100,7 +100,13 @@ class DataUtils {
     return now;
   }
 
-  getNowArray(): object {
+  getNowArray(): {
+    time: string;
+    date: string;
+    tz: string;
+    stz: string;
+    str: string;
+  } {
     return {
       time: this.getTime(),
       date: this.getDate(),
