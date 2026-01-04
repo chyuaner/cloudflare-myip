@@ -27,11 +27,11 @@ const serveBase64 = (base64: string, contentType: string) => {
 };
 
 const isHtmlRequest = (c: Context) => {
-  const accept = c.req.header("Accept") || "";
-  const ua = c.req.header("User-Agent") || "";
+  const accept = (c.req.header("Accept") || "").toLowerCase();
+  const ua = (c.req.header("User-Agent") || "").toLowerCase();
   const isCrawler = /facebookexternalhit|twitterbot|slackbot|discordbot|whatsapp|googlebot|bingbot|crawler|bot/i.test(ua);
-  // 如果是 HTML 或者 雖然是 */* 但不是 curl/wget，就視為 HTML 請求 (給 Crawler)
-  return accept.includes("text/html") || isCrawler || (accept.includes("*/*") && !/curl|wget/i.test(ua));
+  // 如果是 HTML 或者 雖然是 */* 但不是 curl/wget/httpie，就視為 HTML 請求 (給瀏覽器/Crawler)
+  return accept.includes("text/html") || isCrawler || (accept.includes("*/*") && !/curl|wget|httpie/i.test(ua));
 };
 
 app.get("/favicon.png", (c) => {
@@ -91,30 +91,33 @@ app.get("/ip.png", (c) => {
 });
 
 app.all("/", (c) => {
-  // const geo = c.var.geo;
-  // return c.json(geo);
-
   const dataUtils = new DataUtils(c);
   dataUtils.setDefaultTz(DEFAULT_TZ);
   const data = dataUtils.getData();
 
+  const accept = (c.req.header("Accept") || "").toLowerCase();
+
+  // 1. 優先判斷 HTML (針對瀏覽器、爬蟲)
   if (isHtmlRequest(c)) {
-
     const title = '你的IP是: ' + data.ip;
-
     const html = IndexPage({ title, data });
     return c.html(html?.toString() || "");
   }
 
-  // 檢查 Accept header 是否包含 png (例如用 curl 請求圖片時)
-  const acceptHeader = c.req.header("Accept") || "";
-  if (acceptHeader.includes("png")) {
+  // 2. 其次判斷 JSON (針對 API 使用者)
+  if (accept.includes("application/json")) {
+    return c.json(data);
+  }
+
+  // 3. 最後才判斷圖片 (必須精確要求 image/png，避開瀏覽器的 image/apng)
+  if (accept.includes("image/png")) {
      const ImageResponse = c.var.ImageResponse;
      if (ImageResponse) {
        return makeImageResponse(ImageResponse, data);
      }
   }
 
+  // 4. 預設回傳 JSON
   return c.json(data);
 });
 
