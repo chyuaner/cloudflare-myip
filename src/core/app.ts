@@ -98,22 +98,21 @@ app.all("/", (c) => {
   dataUtils.setDefaultTz(DEFAULT_TZ);
   const data = dataUtils.getData();
 
-  // 檢查 Accept header 是否包含 text/html
-  const acceptHeader = c.req.header("Accept") || "";
-  
-  if (acceptHeader.includes("png")) {
-     const ImageResponse = c.var.ImageResponse;
-     if (ImageResponse) {
-       return makeImageResponse(ImageResponse, data);
-     }
-  }
-
   if (isHtmlRequest(c)) {
 
     const title = '你的IP是: ' + data.ip;
 
     const html = IndexPage({ title, data });
     return c.html(html?.toString() || "");
+  }
+
+  // 檢查 Accept header 是否包含 png (例如用 curl 請求圖片時)
+  const acceptHeader = c.req.header("Accept") || "";
+  if (acceptHeader.includes("png")) {
+     const ImageResponse = c.var.ImageResponse;
+     if (ImageResponse) {
+       return makeImageResponse(ImageResponse, data);
+     }
   }
 
   return c.json(data);
