@@ -209,6 +209,7 @@ Layout區
 export interface BaseData {
   longitude?: string;
   latitude?: string;
+  baseUrl?: string;
   [key: string]: any;
 }
 
@@ -294,7 +295,8 @@ const mainStyle = css`
 
 
 const Base: FC<PropsWithChildren<{ title?: string, baseData?: BaseData }>> = (props) => {
-  const { longitude, latitude } = props.baseData || {};
+  const { longitude, latitude, baseUrl } = props.baseData || {};
+  const PUBLIC_BASE_URL = baseUrl || '';
   const params = [
     longitude ? `longitude=${longitude}` : '',
     latitude ? `latitude=${latitude}` : ''
@@ -303,12 +305,28 @@ const Base: FC<PropsWithChildren<{ title?: string, baseData?: BaseData }>> = (pr
   const lightBg = `/background${params ? `?${params}` : ''}`;
   const darkBg = `/background?dark=true${params ? `&${params}` : ''}`;
 
+  const description = '本站提供你的IP檢測服務，包括 ISP、ASN、國家、城市、大洲、時區等詳細數據，並支援 IPv4 與 IPv6 。除了提供網頁界面以外，也提供純文字、JSON輸出，可用Postman當做API服務使用。';
+  const keywords = 'MyIP, myip, 我的公網IP, 我的IP';
+
   return (
     <html lang="zh-tw" class={baseClasses}>
     <head>
       <meta charset="UTF-8" />
       <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
       <title>{props.title ?? '查看你的公網IP'}</title>
+      <meta name="description" content={description} />
+      <meta name="keywords" content={keywords} />
+      <meta property="og:title" content="查看你的公網IP" />
+      <meta property="og:description" content={description} />
+      <meta property="og:type" content="website" />
+      {PUBLIC_BASE_URL && <meta property="og:url" content={PUBLIC_BASE_URL} />}
+      <meta property="og:image" content={PUBLIC_BASE_URL ? `${PUBLIC_BASE_URL}/ip.png` : '/ip.png'} />
+      <meta property="og:site_name" content="查看你的公網IP" />
+      {/* Twitter Card */}
+      <meta name="twitter:card" content="summary_large_image" />
+      <meta name="twitter:title" content="查看你的公網IP" />
+      <meta name="twitter:description" content={description} />
+      <meta name="twitter:image" content={PUBLIC_BASE_URL ? `${PUBLIC_BASE_URL}/ip.png` : '/ip.png'} />
       <Style />
       <GlobalStyle />
       {/* 這裡是後端直接輸出的 CSS，確保 No-JS 也能抓到正確網址 */}

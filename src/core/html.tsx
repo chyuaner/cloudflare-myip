@@ -264,6 +264,7 @@ const IndexPage: FC<{ data: any, title?: string, baseData?: BaseData }> = (props
         ...props.baseData,
         longitude: props.data.longitude,
         latitude: props.data.latitude,
+        baseUrl: props.data.baseUrl,
       }}
     >
 
@@ -361,6 +362,7 @@ const DatePage: FC<{ data: any, title?: string, baseData?: BaseData }> = (props)
         ...(props.baseData?.latitude != null && {
           latitude: props.baseData.latitude,
         }),
+        baseUrl: props.data?.baseUrl || props.baseData?.baseUrl,
       }}
     >
 

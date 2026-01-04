@@ -12,7 +12,9 @@ class DataUtils {
   }
 
   getData() {
+    const baseUrl = new URL(this.honoC.req.url).origin;
     return {
+      baseUrl,
       isIpv6: this.isIpv6(),
       ...this.getHostData(),
       now: {

@@ -233,6 +233,7 @@ function commonResponse<T extends Env = {}>(c: Context<T>, output: any, field?: 
       baseData: {
         longitude: hostData.longitude,
         latitude: hostData.latitude,
+        baseUrl: new URL(c.req.url).origin,
       },
       ...(titleText ? { title: titleText } : {})
     });
@@ -279,6 +280,7 @@ app.on('ALL', ["/now", '/now/local'], (c) => {
     const html = DatePage({ title, data: { now: nowData }, baseData: {
       longitude: hostData.longitude,
       latitude: hostData.latitude,
+      baseUrl: new URL(c.req.url).origin,
     }});
     return c.html(html?.toString() || "");
   }
@@ -305,6 +307,7 @@ app.on('ALL', ["/utc", '/now/utc'], (c) => {
     const html = DatePage({ title, data: { now: nowData }, baseData: {
       longitude: '0.0005',
       latitude: '51.4769',
+      baseUrl: new URL(c.req.url).origin,
     }});
     return c.html(html?.toString() || "");
   }
