@@ -45,7 +45,7 @@ class DataUtils {
   }
 
   getIp(): string {
-    return this.honoC.var.geo.ip;
+    return this.honoC.var.geo?.ip ?? '';
   }
 
   isIpv6(): boolean | undefined {
@@ -72,7 +72,7 @@ class DataUtils {
   }
 
   getTz(): string {
-    return this.tz ?? this.honoC.var.geo.timezone ?? this.defaultTz ?? 'UTC';
+    return (this.tz ?? this.honoC.var.geo?.timezone ?? this.defaultTz ?? 'UTC') || 'UTC';
   }
 
   setDefaultTz(s: string): string {
@@ -140,7 +140,7 @@ class DataUtils {
     for (const p of parts) {
       if (p.type !== "literal") map[p.type] = p.value;
     }
-    return map.timeZoneName;
+    return map.timeZoneName ?? (this.getTz() === 'UTC' ? 'UTC' : 'GMT');
   }
 }
 
