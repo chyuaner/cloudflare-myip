@@ -16,6 +16,7 @@ function collectTextFromFiles(): string {
     path.join(ROOT, 'src/core/html.tsx'),
     path.join(ROOT, 'src/core/baseHtml.tsx'),
     path.join(ROOT, 'src/core/app.ts'),
+    path.join(ROOT, 'src/core/og.tsx'),
   ];
   
   // 基礎字集：英數字、常用符號
@@ -41,6 +42,7 @@ function collectTextFromFiles(): string {
 const ASSET_CONFIG = [
   { key: 'favicon', path: 'src/core/favicon.png', generateIco: true },
   { key: 'font', path: 'src/core/font.ttf', subset: true },
+  { key: 'ogbg', path: 'src/core/ogbg.png' },
 ];
 
 /**
@@ -80,8 +82,11 @@ async function run() {
     if (asset.subset && (ext === 'ttf' || ext === 'otf' || ext === 'woff')) {
       console.log(`🔡 Subsetting font: ${asset.path}...`);
       try {
-        buffer = Buffer.from(await subsetFont(buffer, subsetText, { targetFormat: 'woff2' }));
-        results[`${asset.key}_woff2`] = buffer.toString('base64');
+        const woff2Buffer = Buffer.from(await subsetFont(buffer, subsetText, { targetFormat: 'woff2' }));
+        results[`${asset.key}_woff2`] = woff2Buffer.toString('base64');
+        
+        const ttfBuffer = Buffer.from(await subsetFont(buffer, subsetText, { targetFormat: 'sfnt' }));
+        results[`${asset.key}_ttf`] = ttfBuffer.toString('base64');
       } catch (err) {
         console.error(`❌ Failed to subset font ${asset.path}:`, err);
         // Fallback to original

@@ -2,6 +2,8 @@ import { Hono } from "hono";
 import app from "./core/app.js";
 import { type Variables, type Bindings, type GeoData } from "./core/types.js";
 
+import { ImageResponse } from "@cf-wasm/og";
+
 const worker = new Hono<{ Bindings: Bindings; Variables: Variables }>();
 
 worker.use("*", async (c, next) => {
@@ -30,6 +32,7 @@ worker.use("*", async (c, next) => {
   };
 
   c.set("geo", geo);
+  c.set("ImageResponse", ImageResponse);
   await next();
 });
 

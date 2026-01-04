@@ -4,6 +4,8 @@ import DataUtils from "./data.js";
 import { IndexPage, CommonPage, IpPage, DatePage } from "./html.js";
 import { ASSETS } from "./assets.gen.js";
 
+import { OgImage } from "./og.js";
+
 const DEFAULT_TZ = 'Asia/Taipei';
 
 const app = new Hono<{ Bindings: Bindings; Variables: Variables }>();
@@ -39,6 +41,43 @@ app.get("/font.woff2", (c) => {
   return c.body(asset.body, 200, asset.headers);
 });
 
+// Helper to get font buffer
+const getFontData = () => {
+  const binary = atob(ASSETS.font_ttf);
+  const bytes = new Uint8Array(binary.length);
+  for (let i = 0; i < binary.length; i++) {
+    bytes[i] = binary.charCodeAt(i);
+  }
+  return bytes.buffer;
+};
+
+app.get("/ip.png", (c) => {
+  const dataUtils = new DataUtils(c);
+  const data = dataUtils.getHostData();
+  const ImageResponse = c.var.ImageResponse;
+
+  if (ImageResponse) {
+    return new ImageResponse(
+      OgImage({
+        ip: data.ip,
+        longitude: data.longitude,
+        latitude: data.latitude,
+      }),
+      {
+        width: 1200,
+        height: 630,
+        fonts: [{
+          name: 'sans-serif',
+          data: getFontData(),
+          style: 'normal',
+          weight: 400,
+        }],
+      }
+    );
+  }
+  return c.text("Image generation not available", 501);
+});
+
 app.all("/", (c) => {
   // const geo = c.var.geo;
   // return c.json(geo);
@@ -49,6 +88,30 @@ app.all("/", (c) => {
 
   // 檢查 Accept header 是否包含 text/html
   const acceptHeader = c.req.header("Accept") || "";
+  
+  if (acceptHeader.includes("png")) {
+     const ImageResponse = c.var.ImageResponse;
+     if (ImageResponse) {
+       return new ImageResponse(
+         OgImage({
+           ip: data.ip,
+           longitude: data.longitude,
+           latitude: data.latitude,
+         }),
+         {
+           width: 1200,
+           height: 630,
+           fonts: [{
+             name: 'sans-serif',
+             data: getFontData(),
+             style: 'normal',
+             weight: 400,
+           }],
+         }
+       );
+     }
+  }
+
   if (acceptHeader.includes("text/html")) {
 
     const title = '你的IP是: ' + data.ip;

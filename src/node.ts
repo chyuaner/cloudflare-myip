@@ -7,6 +7,8 @@ import { initGeoIP, lookupIp } from "./core/node-geoip.js";
 // Initialize GeoIP database on startup
 initGeoIP();
 
+import { ImageResponse } from "@cf-wasm/og";
+
 const nodeApp = new Hono<{ Bindings: Bindings; Variables: Variables }>();
 
 nodeApp.use("*", async (c, next) => {
@@ -27,6 +29,7 @@ nodeApp.use("*", async (c, next) => {
   };
 
   c.set("geo", geo);
+  c.set("ImageResponse", ImageResponse);
   await next();
 });
 

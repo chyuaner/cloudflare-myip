@@ -2,6 +2,9 @@ import { Hono } from "hono";
 import app from "./core/app.js";
 import { type Variables, type Bindings, type GeoData } from "./core/types.js";
 
+// @ts-ignore
+import { ImageResponse } from "next/og";
+
 const vercelApp = new Hono<{ Bindings: Bindings; Variables: Variables }>();
 
 vercelApp.use("*", async (c, next) => {
@@ -21,6 +24,7 @@ vercelApp.use("*", async (c, next) => {
   };
 
   c.set("geo", geo);
+  c.set("ImageResponse", ImageResponse);
   await next();
 });
 

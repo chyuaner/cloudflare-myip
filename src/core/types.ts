@@ -21,6 +21,7 @@ export interface GeoData {
 
 export type Variables = {
   geo: GeoData;
+  ImageResponse?: any;
 };
 
 export type Bindings = CloudflareBindings;
