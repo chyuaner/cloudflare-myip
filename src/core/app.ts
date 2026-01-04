@@ -26,6 +26,14 @@ const serveBase64 = (base64: string, contentType: string) => {
   };
 };
 
+const isHtmlRequest = (c: Context) => {
+  const accept = c.req.header("Accept") || "";
+  const ua = c.req.header("User-Agent") || "";
+  const isCrawler = /facebookexternalhit|twitterbot|slackbot|discordbot|whatsapp|googlebot|bingbot|crawler|bot/i.test(ua);
+  // 如果是 HTML 或者 雖然是 */* 但不是 curl/wget，就視為 HTML 請求 (給 Crawler)
+  return accept.includes("text/html") || isCrawler || (accept.includes("*/*") && !/curl|wget/i.test(ua));
+};
+
 app.get("/favicon.png", (c) => {
   const asset = serveBase64(ASSETS.favicon_png, "image/png");
   return c.body(asset.body, 200, asset.headers);
@@ -100,7 +108,7 @@ app.all("/", (c) => {
      }
   }
 
-  if (acceptHeader.includes("text/html")) {
+  if (isHtmlRequest(c)) {
 
     const title = '你的IP是: ' + data.ip;
 
@@ -197,7 +205,7 @@ app.all("/ip", (c) => {
 
   // 檢查 Accept header 是否包含 text/html
   const acceptHeader = c.req.header("Accept") || "";
-  if (acceptHeader.includes("text/html")) {
+  if (isHtmlRequest(c)) {
 
     const title = '你的IP是: ' + data.ip;
 
@@ -218,7 +226,7 @@ function commonResponse<T extends Env = {}>(c: Context<T>, output: any, field?: 
 
   // 檢查 Accept header 是否包含 text/html
   const acceptHeader = c.req.header("Accept") || "";
-  if (acceptHeader.includes("text/html")) {
+  if (isHtmlRequest(c)) {
     const isSimple = typeof outputText !== 'object' || outputText === null;
     const titleText = field
       ? (isSimple ? `${field}: ${outputText}` : field)
@@ -271,7 +279,7 @@ app.on('ALL', ["/now", '/now/local'], (c) => {
   dataUtils.setDefaultTz(DEFAULT_TZ);
 
   const acceptHeader = c.req.header("Accept") || "";
-  if (acceptHeader.includes("text/html")) {
+  if (isHtmlRequest(c)) {
     const nowData = dataUtils.getNowArray();
 
     const title = '現在時間: ' + nowData.time + ' ' + nowData.stz;
@@ -297,7 +305,7 @@ app.on('ALL', ["/now/", '/now/local/'], (c) => {
 
 app.on('ALL', ["/utc", '/now/utc'], (c) => {
   const acceptHeader = c.req.header("Accept") || "";
-  if (acceptHeader.includes("text/html")) {
+  if (isHtmlRequest(c)) {
     const dataUtils = new DataUtils(c);
     dataUtils.setTz('UTC');
     const nowData = dataUtils.getNowArray();
