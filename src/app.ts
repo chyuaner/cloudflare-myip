@@ -2,8 +2,7 @@ import { Hono } from "hono";
 import app from "./core/app.js";
 import { type Variables, type Bindings, type GeoData } from "./core/types.js";
 
-// @ts-ignore
-import { ImageResponse } from "next/og";
+import { ImageResponse } from "@vercel/og";
 
 const vercelApp = new Hono<{ Bindings: Bindings; Variables: Variables }>();
 
