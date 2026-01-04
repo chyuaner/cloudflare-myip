@@ -51,29 +51,33 @@ const getFontData = () => {
   return bytes.buffer;
 };
 
+const makeImageResponse = (ImageResponse: any, data: { ip: string, longitude?: string, latitude?: string }) => {
+  return new ImageResponse(
+    OgImage({
+      ip: data.ip,
+      longitude: data.longitude,
+      latitude: data.latitude,
+    }),
+    {
+      width: 1200,
+      height: 630,
+      fonts: [{
+        name: 'sans-serif',
+        data: getFontData(),
+        style: 'normal',
+        weight: 400,
+      }],
+    }
+  );
+};
+
 app.get("/ip.png", (c) => {
   const dataUtils = new DataUtils(c);
   const data = dataUtils.getHostData();
   const ImageResponse = c.var.ImageResponse;
 
   if (ImageResponse) {
-    return new ImageResponse(
-      OgImage({
-        ip: data.ip,
-        longitude: data.longitude,
-        latitude: data.latitude,
-      }),
-      {
-        width: 1200,
-        height: 630,
-        fonts: [{
-          name: 'sans-serif',
-          data: getFontData(),
-          style: 'normal',
-          weight: 400,
-        }],
-      }
-    );
+    return makeImageResponse(ImageResponse, data);
   }
   return c.text("Image generation not available", 501);
 });
@@ -92,23 +96,7 @@ app.all("/", (c) => {
   if (acceptHeader.includes("png")) {
      const ImageResponse = c.var.ImageResponse;
      if (ImageResponse) {
-       return new ImageResponse(
-         OgImage({
-           ip: data.ip,
-           longitude: data.longitude,
-           latitude: data.latitude,
-         }),
-         {
-           width: 1200,
-           height: 630,
-           fonts: [{
-             name: 'sans-serif',
-             data: getFontData(),
-             style: 'normal',
-             weight: 400,
-           }],
-         }
-       );
+       return makeImageResponse(ImageResponse, data);
      }
   }
 
