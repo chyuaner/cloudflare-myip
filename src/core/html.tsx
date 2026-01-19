@@ -18,7 +18,7 @@ const IpDiv: FC<{ ip:string, longitude?: string, latitude?: string}> = (props) =
 
     .main-text {
       text-align: center;
-      font-size: 2rem;
+      font-size: 1.9rem;
       p {
         margin: 2rem 0;
       }
@@ -84,7 +84,7 @@ const IpDiv: FC<{ ip:string, longitude?: string, latitude?: string}> = (props) =
         <div class="main-text">
           <p class={isIpv6(props.ip) ? "ipv6" : "ipv4"}>{props.ip}</p>
           {/* <p class="ipv4">192.168.253.112</p> */}
-          {/* <p style="word-break: break-all">2001:b400:e2c2:a8bb:e97d:75b:7b16:b6fe</p> */}
+          {/* <p style="word-break: break-all">2001:b400:e25e:47c2:dfe3:d833:8862:1633</p> */}
         </div>
 
         { (props.longitude || props.latitude) &&
