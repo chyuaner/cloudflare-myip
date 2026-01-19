@@ -315,8 +315,8 @@ const Base: FC<PropsWithChildren<{ title?: string, baseData?: BaseData }>> = (pr
       <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
       <title>{props.title ?? '查看你的公網IP'}</title>
       <meta name="color-scheme" content="light dark" />
-      <meta name="theme-color" content="#afdbf3" media="(prefers-color-scheme: light)" />
-      <meta name="theme-color" content="#354b70" media="(prefers-color-scheme: dark)" />
+      <meta name="theme-color" content="#cfe9f8" media="(prefers-color-scheme: light)" />
+      <meta name="theme-color" content="#293955" media="(prefers-color-scheme: dark)" />
       <meta name="description" content={description} />
       <meta name="keywords" content={keywords} />
       <meta property="og:title" content="查看你的公網IP" />
