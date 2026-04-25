@@ -262,6 +262,37 @@ function commonResponse<T extends Env = {}>(c: Context<T>, output: any, field?: 
   return c.text(String(outputText));
 }
 
+/**
+ * 復刻 Cloudflare trace 實作
+ * curl https://www.cloudflare.com/cdn-cgi/trace
+ */
+app.get("/trace", (c) => {
+  const cf = (c.req.raw as any).cf;
+  const data = new DataUtils(c).getData();
+  const url = new URL(c.req.url);
+  
+  const trace = [
+    `fl=${cf?.colo || ""}`,
+    `h=${url.hostname}`,
+    `ip=${data.ip}`,
+    `ts=${(Date.now() / 1000).toFixed(3)}`,
+    `visit_scheme=${url.protocol.replace(":", "")}`,
+    `uag=${c.req.header("User-Agent") || ""}`,
+    `colo=${cf?.colo || ""}`,
+    // `sliver=none`,
+    `http=${cf?.httpProtocol || ""}`,
+    `loc=${cf?.country || ""}`,
+    `tls=${cf?.tlsVersion || ""}`,
+    `sni=plaintext`,
+    `warp=${data.isWarp || "off"}`,
+    // `gateway=off`,
+    // `rbi=off`,
+    `kex=${cf?.tlsCipher || ""}`,
+  ].join("\n");
+  
+  return c.text(trace + "\n");
+});
+
 app.all(
   '/:field{(hostname|colo|country|city|continent|latitude|longitude|asn|asOrganization|isEUCountry|postalCode|metroCode|region|regionCode|timezone)}',
   (c) => {
