@@ -79,7 +79,13 @@ class DataUtils {
   }
 
   getTz(): string {
-    return (this.tz ?? this.honoC.var.geo?.timezone ?? this.defaultTz ?? 'UTC') || 'UTC';
+    return (
+      this.tz ?? 
+      this.honoC.var.geo?.timezone ?? 
+      Intl.DateTimeFormat().resolvedOptions().timeZone ??
+      this.defaultTz ?? 
+      'UTC'
+    ) || 'UTC';
   }
 
   setDefaultTz(s: string): string {
