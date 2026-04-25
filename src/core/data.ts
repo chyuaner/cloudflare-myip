@@ -15,8 +15,9 @@ class DataUtils {
     const baseUrl = new URL(this.honoC.req.url).origin;
     return {
       baseUrl,
-      isIpv6: this.isIpv6(),
       ...this.getHostData(),
+      isIpv6: this.isIpv6(),
+      isWarp: this.isWarp(),
       now: {
         time: this.getTime(),
         date: this.getDate(),
@@ -53,6 +54,10 @@ class DataUtils {
   isIpv6(): boolean | undefined {
     const thisIp = this.getIp();
     return isIpv6(thisIp);
+  }
+
+  isWarp(): boolean | undefined {
+    return this.honoC.var.geo?.asn === 13335;
   }
 
   private getUtcDateObj(): Date {
