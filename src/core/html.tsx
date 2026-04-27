@@ -293,7 +293,7 @@ const IndexPage: FC<{ data: any, title?: string, baseData?: BaseData }> = (props
         <DataItemsDiv items={{
           asOrganization: props.data.asOrganization,
           asn           : props.data.asn,
-          warp          : props.data.isWarp ? 'on' : 'off',
+          isWarp        : props.data.isWarp ? 'on' : 'off',
           country       : props.data.country,
           city          : props.data.city,
           continent     : props.data.continent,
@@ -334,13 +334,13 @@ const IpPage: FC<{ data: any, title?: string, baseData?: BaseData }> = (props) =
         <DataItemsDiv items={{
           asOrganization: props.data.asOrganization,
           asn           : props.data.asn,
+          isWarp        : props.data.isWarp ? 'on' : 'off',
           country       : props.data.country,
           city          : props.data.city,
           continent     : props.data.continent,
           region        : props.data.region,
           regionCode    : props.data.regionCode,
           timezone      : props.data.timezone,
-          warp          : props.data.warp,
           isEUCountry   : props.data.isEUCountry,
           postalCode    : props.data.postalCode,
           metroCode     : props.data.metroCode,

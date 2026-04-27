@@ -56,7 +56,7 @@ class DataUtils {
     return isIpv6(thisIp);
   }
 
-  isWarp(): boolean | undefined {
+  isWarp(): boolean {
     return this.honoC.var.geo?.asn === 13335;
   }
 
@@ -80,10 +80,10 @@ class DataUtils {
 
   getTz(): string {
     return (
-      this.tz ?? 
-      this.honoC.var.geo?.timezone ?? 
+      this.tz ??
+      this.honoC.var.geo?.timezone ??
       Intl.DateTimeFormat().resolvedOptions().timeZone ??
-      this.defaultTz ?? 
+      this.defaultTz ??
       'UTC'
     ) || 'UTC';
   }

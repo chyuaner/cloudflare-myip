@@ -270,7 +270,7 @@ app.get("/trace", (c) => {
   const cf = (c.req.raw as any).cf;
   const data = new DataUtils(c).getData();
   const url = new URL(c.req.url);
-  
+
   const trace = [
     `fl=${cf?.colo || ""}`,
     `h=${url.hostname}`,
@@ -289,12 +289,12 @@ app.get("/trace", (c) => {
     // `rbi=off`,
     `kex=${cf?.tlsCipher || ""}`,
   ].join("\n");
-  
+
   return c.text(trace + "\n");
 });
 
 app.all(
-  '/:field{(hostname|colo|country|city|continent|latitude|longitude|asn|asOrganization|isEUCountry|postalCode|metroCode|region|regionCode|timezone)}',
+  '/:field{(hostname|colo|isWarp|country|city|continent|latitude|longitude|asn|asOrganization|isEUCountry|postalCode|metroCode|region|regionCode|timezone)}',
   (c) => {
 
     // 取得路徑參數 `field`
