@@ -1,5 +1,6 @@
 # prod
 dist/
+*-autosave.kra
 
 # dev
 .yarn/
