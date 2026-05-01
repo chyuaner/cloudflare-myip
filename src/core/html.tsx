@@ -187,17 +187,28 @@ const DataItemsDiv: FC<{ items: Record<string, string> }> = (props) => {
     .card {
       /* Light Mode / Default */
       background: rgba(255, 255, 255, 0.6);
-      padding: 1rem;
       border-radius: 16px;
       border: 1px solid rgba(255, 255, 255, 0.6);
       transition: all 0.3s ease;
       list-style: none;
       box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+      padding: 1rem;
 
       &:hover {
         background: rgba(255, 255, 255, 0.8);
         transform: translateY(-2px);
         box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      }
+
+      &:has(a) {
+        padding: 0;
+      }
+
+      & > a {
+        padding: 1rem;
+        display: block;
+        text-decoration: none;
+        color: inherit;
       }
 
       h3 {
@@ -241,19 +252,46 @@ const DataItemsDiv: FC<{ items: Record<string, string> }> = (props) => {
       {/* 依 items 產生列表 */}
       <ul class={gridClass}>
         <li class="col-6 card" key="asOrganization">
-          <h3>asOrganization</h3>
-          <p>{props.items.asOrganization}</p>
+          {props.items.asOrganization ? (
+            <ACopyText text={props.items.asOrganization}>
+              <h3>asOrganization</h3>
+              <p>{props.items.asOrganization}</p>
+            </ACopyText>
+          ) : (
+            <>
+              <h3>asOrganization</h3>
+              <p>{props.items.asOrganization}</p>
+            </>
+          )}
         </li>
         <li class="col-6 card" key="asn">
-          <h3>asn</h3>
-          <p>{props.items.asn}</p>
+          {props.items.asn ? (
+            <ACopyText text={props.items.asn}>
+              <h3>asn</h3>
+              <p>{props.items.asn}</p>
+            </ACopyText>
+          ) : (
+            <>
+              <h3>asn</h3>
+              <p>{props.items.asn}</p>
+            </>
+          )}
         </li>
         {Object.entries(props.items)
           .filter(([key]) => key !== "asOrganization" && key !== "asn")   // ⬅️ 排除特例
           .map(([key, value]) => (
             <li class="col-4 card" key={key}>
-              <h3>{key}</h3>
-              <p>{value}</p>
+              {value ? (
+                <ACopyText text={value}>
+                  <h3>{key}</h3>
+                  <p>{value}</p>
+                </ACopyText>
+              ) : (
+                <>
+                  <h3>{key}</h3>
+                  <p>{value}</p>
+                </>
+              )}
             </li>
         ))}
       </ul>

@@ -305,13 +305,14 @@ const GlobalStyle = () => (
 /* ----------------------------------------------------
 Components 區
 ---------------------------------------------------- */
-const ACopyText: FC<PropsWithChildren<{ tooltipText?: string, text?: string, class?: string }>> = (props) => {
+const ACopyText: FC<PropsWithChildren<{ tooltipText?: string, text?: string, class?: string, style?: string }>> = (props) => {
   const content = props.children || props.text;
   const tooltipText = props.tooltipText || '點擊複製這段文字';
   const className = props.class || '';
+  const styleName = props.style || '';
 
   return (
-    <a href="#" class={className} data-tooltip data-tooltip-title={tooltipText} data-copy-btn data-copy-text={props.text}>
+    <a href="#" class={className} style={styleName} data-tooltip data-tooltip-title={tooltipText} data-copy-btn data-copy-text={props.text}>
       {content}
     </a>
   )
