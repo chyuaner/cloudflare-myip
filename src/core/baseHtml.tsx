@@ -166,42 +166,106 @@ const blockStyle = css`
 `;
 
 const GlobalStyle = () => (
-  <style dangerouslySetInnerHTML={{ __html: `
-    @font-face {
-      font-family: 'CustomFont';
-      src: url('/font.woff2') format('woff2');
-      font-weight: normal;
-      font-style: normal;
-      font-display: swap;
-    }
-    body {
-      font-family: 'CustomFont', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-      margin: 0;
-      padding: 0;
-      background: #eceff4;
-      background: linear-gradient(135deg,  #f6f8f9 0%, #e5ebee 50%, #d7dee3 56%, #f5f7f9 100%);
-      color: #333;
-    }
-    hr {
-      border: 0;
-      height: 1px;
-      background: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0));
-      margin: 0.1rem 0;
-      grid-column: span 12;
-    }
-    @media (prefers-color-scheme: dark) {
+  <>
+    <style dangerouslySetInnerHTML={{ __html: `
+      @font-face {
+        font-family: 'CustomFont';
+        src: url('/font.woff2') format('woff2');
+        font-weight: normal;
+        font-style: normal;
+        font-display: swap;
+      }
       body {
-        background: #353a52;
-        background: linear-gradient(149deg,rgba(40, 42, 54, 1) 0%, rgba(51, 54, 69, 1) 13%, rgb(53, 58, 82) 30%, rgba(44, 47, 62, 1) 53%, rgba(40, 42, 54, 1) 93%, rgba(62, 54, 71, 1) 100%);
-        color: white;
+        font-family: 'CustomFont', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        background: #eceff4;
+        background: linear-gradient(135deg,  #f6f8f9 0%, #e5ebee 50%, #d7dee3 56%, #f5f7f9 100%);
+        color: #333;
       }
       hr {
-        background: linear-gradient(to right, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0));
+        border: 0;
+        height: 1px;
+        background: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0));
+        margin: 0.1rem 0;
+        grid-column: span 12;
       }
-    }
-  ` }} />
+      @media (prefers-color-scheme: dark) {
+        body {
+          background: #353a52;
+          background: linear-gradient(149deg,rgba(40, 42, 54, 1) 0%, rgba(51, 54, 69, 1) 13%, rgb(53, 58, 82) 30%, rgba(44, 47, 62, 1) 53%, rgba(40, 42, 54, 1) 93%, rgba(62, 54, 71, 1) 100%);
+          color: white;
+        }
+        hr {
+          background: linear-gradient(to right, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0));
+        }
+      }
+      .copy-toast {
+        position: fixed;
+        bottom: 2rem;
+        left: 50%;
+        transform: translateX(-50%) translateY(0);
+        background: rgba(0,0,0,0.75);
+        color: #fff;
+        padding: 0.5rem 1.25rem;
+        border-radius: 999px;
+        font-size: 0.9rem;
+        pointer-events: none;
+        opacity: 0;
+        transition: opacity 0.3s;
+        z-index: 9999;
+      }
+      .copy-toast.show { opacity: 1; }
+    ` }} />
+    <script dangerouslySetInnerHTML={{ __html: `
+      document.addEventListener('click', function(e) {
+        var target = e.target.closest('[data-copy-btn]');
+        if (!target) return;
+        e.preventDefault();
+        var txt = target.getAttribute('data-copy-text');
+        if (!txt) txt = target.innerText.trim();
+        if (!txt) return;
+
+        (navigator.clipboard ? navigator.clipboard.writeText(txt) : Promise.resolve(document.execCommand('copy',false,txt) || void(function(){
+          var ta=document.createElement('textarea');
+          ta.value=txt;
+          ta.style.cssText='position:fixed;opacity:0';
+          document.body.appendChild(ta);
+          ta.select();
+          document.execCommand('copy');
+          document.body.removeChild(ta);
+        }()))).then(function(){
+          var t = document.getElementById('copy-toast');
+          if (!t) {
+            t = document.createElement('div');
+            t.id = 'copy-toast';
+            t.className = 'copy-toast';
+            t.innerText = '已複製！';
+            document.body.appendChild(t);
+          }
+          clearTimeout(window.__copyTimer);
+          t.classList.add('show');
+          window.__copyTimer = setTimeout(function(){ t.classList.remove('show'); }, 1500);
+        }).catch(function(){});
+      });
+    ` }} />
+  </>
 );
 
+/* ----------------------------------------------------
+Components 區
+---------------------------------------------------- */
+const ACopyText: FC<PropsWithChildren<{ tooltipText?: string, text?: string, class?: string }>> = (props) => {
+  const content = props.children || props.text;
+  const tooltipText = props.tooltipText || '複製這段文字';
+  const className = props.class || '';
+
+  return (
+    <a href="#" class={className} title={tooltipText} data-copy-btn data-copy-text={props.text} style="cursor:pointer; text-decoration:none; color:inherit;">
+      {content}
+    </a>
+  )
+}
 
 /* ----------------------------------------------------
 Layout區
@@ -400,4 +464,4 @@ const Base: FC<PropsWithChildren<{ title?: string, baseData?: BaseData }>> = (pr
 /* ----------------------------------------------------
 設定哪些組件要開放
 ---------------------------------------------------- */
-export {Layout, JsonRender, gridClass};
+export {Layout, JsonRender, gridClass, ACopyText};

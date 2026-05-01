@@ -1,5 +1,5 @@
 import type { FC } from 'hono/jsx'
-import { gridClass, JsonRender, Layout, type BaseData } from './baseHtml.js'
+import { gridClass, JsonRender, Layout, ACopyText, type BaseData } from './baseHtml.js'
 import { css, cx } from 'hono/css';
 import { isIpv6 } from './data.js';
 
@@ -49,23 +49,6 @@ const IpDiv: FC<{ ip:string, longitude?: string, latitude?: string}> = (props) =
       }
     }
 
-    .copy-toast {
-      position: fixed;
-      bottom: 2rem;
-      left: 50%;
-      transform: translateX(-50%) translateY(0);
-      background: rgba(0,0,0,0.75);
-      color: #fff;
-      padding: 0.5rem 1.25rem;
-      border-radius: 999px;
-      font-size: 0.9rem;
-      pointer-events: none;
-      opacity: 0;
-      transition: opacity 0.3s;
-      z-index: 9999;
-      &.show { opacity: 1; }
-    }
-
     .pos {
       display: flex;
       align-items: center;
@@ -106,12 +89,12 @@ const IpDiv: FC<{ ip:string, longitude?: string, latitude?: string}> = (props) =
       </header>
       <main>
         <div class="main-text">
-          <p id="ip-text" class={isIpv6(props.ip) ? "ipv6" : "ipv4"} title="點擊複製 IP">{props.ip}</p>
-          {/* <p class="ipv4">192.168.253.112</p> */}
-          {/* <p style="word-break: break-all">2001:b400:e25e:47c2:dfe3:d833:8862:1633</p> */}
+          <p id="ip-text" class={isIpv6(props.ip) ? "ipv6" : "ipv4"}>
+            <ACopyText tooltipText="點擊複製 IP" text={props.ip}>
+              <span>{props.ip}</span>
+            </ACopyText>
+          </p>
         </div>
-        <div id="copy-toast" class="copy-toast">已複製！</div>
-        <script dangerouslySetInnerHTML={{ __html: `(function(){var p=document.getElementById('ip-text'),t=document.getElementById('copy-toast');if(!p||!t)return;var timer;p.addEventListener('click',function(){var txt=p.innerText.trim();if(!txt)return;(navigator.clipboard?navigator.clipboard.writeText(txt):Promise.resolve(document.execCommand('copy',false,txt)||void(function(){var ta=document.createElement('textarea');ta.value=txt;ta.style.cssText='position:fixed;opacity:0';document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);}()))).then(function(){clearTimeout(timer);t.classList.add('show');timer=setTimeout(function(){t.classList.remove('show');},1500);}).catch(function(){});});})();` }} />
 
         { (props.longitude || props.latitude) &&
           <div class="pos">
