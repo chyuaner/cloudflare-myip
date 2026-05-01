@@ -21,6 +21,13 @@ const IpDiv: FC<{ ip:string, longitude?: string, latitude?: string}> = (props) =
       font-size: 1.9rem;
       p {
         margin: 2rem 0;
+        cursor: pointer;
+        user-select: none;
+        position: relative;
+        display: inline-block;
+        transition: opacity 0.15s;
+        &:hover { opacity: 0.75; }
+        &:active { opacity: 0.5; }
       }
       .ipv4 {
           color: #3b82f6; /* Modern Blue */
@@ -40,6 +47,23 @@ const IpDiv: FC<{ ip:string, longitude?: string, latitude?: string}> = (props) =
         .ipv4 { color: #60a5fa; }
         .ipv6 { color: #34d399; }
       }
+    }
+
+    .copy-toast {
+      position: fixed;
+      bottom: 2rem;
+      left: 50%;
+      transform: translateX(-50%) translateY(0);
+      background: rgba(0,0,0,0.75);
+      color: #fff;
+      padding: 0.5rem 1.25rem;
+      border-radius: 999px;
+      font-size: 0.9rem;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.3s;
+      z-index: 9999;
+      &.show { opacity: 1; }
     }
 
     .pos {
@@ -82,10 +106,12 @@ const IpDiv: FC<{ ip:string, longitude?: string, latitude?: string}> = (props) =
       </header>
       <main>
         <div class="main-text">
-          <p class={isIpv6(props.ip) ? "ipv6" : "ipv4"}>{props.ip}</p>
+          <p id="ip-text" class={isIpv6(props.ip) ? "ipv6" : "ipv4"} title="點擊複製 IP">{props.ip}</p>
           {/* <p class="ipv4">192.168.253.112</p> */}
           {/* <p style="word-break: break-all">2001:b400:e25e:47c2:dfe3:d833:8862:1633</p> */}
         </div>
+        <div id="copy-toast" class="copy-toast">已複製！</div>
+        <script dangerouslySetInnerHTML={{ __html: `(function(){var p=document.getElementById('ip-text'),t=document.getElementById('copy-toast');if(!p||!t)return;var timer;p.addEventListener('click',function(){var txt=p.innerText.trim();if(!txt)return;(navigator.clipboard?navigator.clipboard.writeText(txt):Promise.resolve(document.execCommand('copy',false,txt)||void(function(){var ta=document.createElement('textarea');ta.value=txt;ta.style.cssText='position:fixed;opacity:0';document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);}()))).then(function(){clearTimeout(timer);t.classList.add('show');timer=setTimeout(function(){t.classList.remove('show');},1500);}).catch(function(){});});})();` }} />
 
         { (props.longitude || props.latitude) &&
           <div class="pos">
