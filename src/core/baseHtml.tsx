@@ -200,22 +200,61 @@ const GlobalStyle = () => (
           background: linear-gradient(to right, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0));
         }
       }
-      .copy-toast {
-        position: fixed;
-        bottom: 2rem;
-        left: 50%;
-        transform: translateX(-50%) translateY(0);
-        background: rgba(0,0,0,0.75);
-        color: #fff;
-        padding: 0.5rem 1.25rem;
-        border-radius: 999px;
-        font-size: 0.9rem;
-        pointer-events: none;
-        opacity: 0;
-        transition: opacity 0.3s;
-        z-index: 9999;
+
+      /* Tooltip base state */
+      [data-tooltip] {
+          position: relative;
+          display: inline-block;
       }
-      .copy-toast.show { opacity: 1; }
+      [data-tooltip]:before,
+      [data-tooltip]:after {
+          position: absolute;
+          opacity: 0;
+          visibility: hidden;
+          transition: opacity 0.2s ease-out, visibility 0.2s ease-out;
+          pointer-events: none;
+          z-index: 100;
+          left: 50%;
+      }
+
+      /* Show on hover OR active status */
+      [data-tooltip]:hover:before,
+      [data-tooltip]:hover:after,
+      [data-tooltip].tooltip-active:before,
+      [data-tooltip].tooltip-active:after {
+          opacity: 1;
+          visibility: visible;
+      }
+
+      /* Tooltip box - Positioned ABOVE */
+      [data-tooltip]:before {
+          content: attr(data-tooltip-title);
+          background: rgba(0, 0, 0, 0.8);
+          border-radius: 6px;
+          color: #fff;
+          width: max-content;
+          max-width: 250px;
+          padding: .4em .7em;
+          bottom: calc(100% + 10px);
+          transform: translateX(-50%);
+          text-align: center;
+          line-height: 1.2;
+          font-size: 0.8rem;
+          font-weight: normal;
+          white-space: normal;
+      }
+
+      /* Tooltip arrow - Pointing DOWN */
+      [data-tooltip]:after {
+          content: "";
+          width: 0;
+          height: 0;
+          border-width: 6px 6px 0 6px;
+          border-style: solid;
+          border-color: rgba(0, 0, 0, 0.8) transparent transparent transparent;
+          bottom: calc(100% + 4px);
+          margin-left: -6px;
+      }
     ` }} />
     <script dangerouslySetInnerHTML={{ __html: `
       document.addEventListener('click', function(e) {
@@ -235,17 +274,28 @@ const GlobalStyle = () => (
           document.execCommand('copy');
           document.body.removeChild(ta);
         }()))).then(function(){
-          var t = document.getElementById('copy-toast');
-          if (!t) {
-            t = document.createElement('div');
-            t.id = 'copy-toast';
-            t.className = 'copy-toast';
-            t.innerText = '已複製！';
-            document.body.appendChild(t);
+          if (target.hasAttribute('data-tooltip')) {
+            if (target._tooltipTimeout) clearTimeout(target._tooltipTimeout);
+            if (target._tooltipRestoreTimeout) clearTimeout(target._tooltipRestoreTimeout);
+
+            const originalTitle = target.getAttribute('data-original-title') || target.getAttribute('data-tooltip-title');
+            if (!target.hasAttribute('data-original-title')) {
+              target.setAttribute('data-original-title', originalTitle);
+            }
+
+            target.setAttribute('data-tooltip-title', '已複製！');
+            target.classList.add('tooltip-active');
+
+            target._tooltipTimeout = setTimeout(function() {
+              target.classList.remove('tooltip-active');
+              target._tooltipRestoreTimeout = setTimeout(function() {
+                target.setAttribute('data-tooltip-title', originalTitle);
+                target.removeAttribute('data-original-title');
+                target._tooltipRestoreTimeout = null;
+              }, 200);
+              target._tooltipTimeout = null;
+            }, 1500);
           }
-          clearTimeout(window.__copyTimer);
-          t.classList.add('show');
-          window.__copyTimer = setTimeout(function(){ t.classList.remove('show'); }, 1500);
         }).catch(function(){});
       });
     ` }} />
@@ -257,11 +307,11 @@ Components 區
 ---------------------------------------------------- */
 const ACopyText: FC<PropsWithChildren<{ tooltipText?: string, text?: string, class?: string }>> = (props) => {
   const content = props.children || props.text;
-  const tooltipText = props.tooltipText || '複製這段文字';
+  const tooltipText = props.tooltipText || '點擊複製這段文字';
   const className = props.class || '';
 
   return (
-    <a href="#" class={className} title={tooltipText} data-copy-btn data-copy-text={props.text} style="cursor:pointer; text-decoration:none; color:inherit;">
+    <a href="#" class={className} data-tooltip data-tooltip-title={tooltipText} data-copy-btn data-copy-text={props.text}>
       {content}
     </a>
   )

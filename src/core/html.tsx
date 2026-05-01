@@ -89,8 +89,8 @@ const IpDiv: FC<{ ip:string, longitude?: string, latitude?: string}> = (props) =
       </header>
       <main>
         <div class="main-text">
-          <p id="ip-text" class={isIpv6(props.ip) ? "ipv6" : "ipv4"}>
-            <ACopyText class="link-text" tooltipText="點擊複製 IP" text={props.ip}>
+          <p id="ip-text">
+            <ACopyText class={`${isIpv6(props.ip) ? "ipv6" : "ipv4"} link-text`} tooltipText="點擊複製 IP" text={props.ip}>
               <span>{props.ip}</span>
             </ACopyText>
           </p>
