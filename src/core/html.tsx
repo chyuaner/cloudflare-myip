@@ -251,7 +251,7 @@ const DataItemsDiv: FC<{ items: Record<string, string> }> = (props) => {
 
       {/* 依 items 產生列表 */}
       <ul class={gridClass}>
-        <li class="col-6 card" key="asOrganization">
+        <li class="col-8 card" key="asOrganization">
           {props.items.asOrganization ? (
             <ACopyText text={props.items.asOrganization}>
               <h3>asOrganization</h3>
@@ -264,7 +264,7 @@ const DataItemsDiv: FC<{ items: Record<string, string> }> = (props) => {
             </>
           )}
         </li>
-        <li class="col-6 card" key="asn">
+        <li class="col-4 card" key="asn">
           {props.items.asn ? (
             <ACopyText text={props.items.asn}>
               <h3>asn</h3>
