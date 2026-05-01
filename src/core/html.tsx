@@ -16,6 +16,13 @@ const IpDiv: FC<{ ip:string, longitude?: string, latitude?: string}> = (props) =
       // padding: 0 1rem;
     }
 
+    .link-text {
+      transition: opacity 0.2s;
+      &:hover { opacity: 0.7; }
+      &:active { opacity: 0.5; }
+      text-decoration: none;
+    }
+
     .main-text {
       text-align: center;
       font-size: 1.9rem;
@@ -25,9 +32,6 @@ const IpDiv: FC<{ ip:string, longitude?: string, latitude?: string}> = (props) =
         user-select: none;
         position: relative;
         display: inline-block;
-        transition: opacity 0.15s;
-        &:hover { opacity: 0.75; }
-        &:active { opacity: 0.5; }
       }
       .ipv4 {
           color: #3b82f6; /* Modern Blue */
@@ -58,10 +62,6 @@ const IpDiv: FC<{ ip:string, longitude?: string, latitude?: string}> = (props) =
         align-items: center;
         text-decoration: none;
         color: inherit;
-        transition: opacity 0.2s;
-        &:hover {
-          opacity: 0.7;
-        }
       }
 
       ul {
@@ -90,7 +90,7 @@ const IpDiv: FC<{ ip:string, longitude?: string, latitude?: string}> = (props) =
       <main>
         <div class="main-text">
           <p id="ip-text" class={isIpv6(props.ip) ? "ipv6" : "ipv4"}>
-            <ACopyText tooltipText="點擊複製 IP" text={props.ip}>
+            <ACopyText class="link-text" tooltipText="點擊複製 IP" text={props.ip}>
               <span>{props.ip}</span>
             </ACopyText>
           </p>
@@ -98,7 +98,7 @@ const IpDiv: FC<{ ip:string, longitude?: string, latitude?: string}> = (props) =
 
         { (props.longitude || props.latitude) &&
           <div class="pos">
-            <a href={`https://yandex.com/maps/?ll=${props.longitude}%2C${props.latitude}&z=11`} target="_blank">
+            <a href={`https://yandex.com/maps/?ll=${props.longitude}%2C${props.latitude}&z=11`} target="_blank" class="link-text">
               <header>
                 📌
               </header>
