@@ -6,6 +6,7 @@
 		"dev": "npm run build:assets && wrangler dev",
 		"dev:worker": "npm run build:assets && wrangler dev --ip 0.0.0.0",
 		"dev:vercel": "npm run build:assets && vercel dev",
+		"dev:node": "npm run build:assets && tsx src/node.ts",
 		"start": "tsx src/node.ts",
 		"start:node": "tsx src/node.ts",
 		"build": "npm run build:assets && tsc",
