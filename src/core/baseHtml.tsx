@@ -428,21 +428,21 @@ const Base: FC<PropsWithChildren<{ title?: string, baseData?: BaseData }>> = (pr
     <head>
       <meta charset="UTF-8" />
       <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-      <title>{props.title ?? '查看你的公網IP'}</title>
+      <title>{props.title ?? '查看我現在的公網IP'}</title>
       <meta name="color-scheme" content="light dark" />
       <meta name="theme-color" content="#cfe9f8" media="(prefers-color-scheme: light)" />
       <meta name="theme-color" content="#293955" media="(prefers-color-scheme: dark)" />
       <meta name="description" content={description} />
       <meta name="keywords" content={keywords} />
-      <meta property="og:title" content="查看你的公網IP" />
+      <meta property="og:title" content="查看我現在的公網IP" />
       <meta property="og:description" content={description} />
       <meta property="og:type" content="website" />
       {PUBLIC_BASE_URL && <meta property="og:url" content={PUBLIC_BASE_URL} />}
       <meta property="og:image" content={PUBLIC_BASE_URL ? `${PUBLIC_BASE_URL}/ip.png` : '/ip.png'} />
-      <meta property="og:site_name" content="查看你的公網IP" />
+      <meta property="og:site_name" content="查看我現在的公網IP" />
       {/* Twitter Card */}
       <meta name="twitter:card" content="summary_large_image" />
-      <meta name="twitter:title" content="查看你的公網IP" />
+      <meta name="twitter:title" content="查看我現在的公網IP" />
       <meta name="twitter:description" content={description} />
       <meta name="twitter:image" content={PUBLIC_BASE_URL ? `${PUBLIC_BASE_URL}/ip.png` : '/ip.png'} />
       <Style />

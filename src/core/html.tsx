@@ -85,7 +85,7 @@ const IpDiv: FC<{ ip:string, longitude?: string, latitude?: string}> = (props) =
   return (
     <section class={style}>
       <header>
-        <h2>你目前的IP：</h2>
+        <h2>我現在的公網IP地址：</h2>
       </header>
       <main>
         <div class="main-text">

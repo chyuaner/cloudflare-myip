@@ -99,7 +99,7 @@ app.all("/", (c) => {
 
   // 1. 優先判斷 HTML (針對瀏覽器、爬蟲)
   if (isHtmlRequest(c)) {
-    const title = '你的IP是: ' + data.ip;
+    const title = 'My IP: ' + data.ip;
     const html = IndexPage({ title, data });
     return c.html(html?.toString() || "");
   }
@@ -209,7 +209,7 @@ app.all("/ip", (c) => {
   const acceptHeader = c.req.header("Accept") || "";
   if (isHtmlRequest(c)) {
 
-    const title = '你的IP是: ' + data.ip;
+    const title = 'My IP: ' + data.ip;
 
     const html = IpPage({ title, data });
     return c.html(html?.toString() || "");

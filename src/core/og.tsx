@@ -19,8 +19,8 @@ export const OgImage = ({ ip, longitude, latitude }: { ip: string, longitude?: s
             fontFamily: 'sans-serif',
             color: '#333'
         }}>
-            <div style={{ display: 'flex', fontSize: 60, marginBottom: 60, color: '#000' }}>查看你的公網IP</div>
-            <div style={{ display: 'flex', textAlign: 'left', alignSelf: 'flex-start', marginLeft: 80, fontSize: 42, marginBottom: 20, color: '#000' }}>你目前的IP：</div>
+            <div style={{ display: 'flex', fontSize: 60, marginBottom: 60, color: '#000' }}>查看我現在的公網IP</div>
+            <div style={{ display: 'flex', textAlign: 'left', alignSelf: 'flex-start', marginLeft: 80, fontSize: 42, marginBottom: 20, color: '#000' }}>現在的公網IP地址：</div>
             <div style={{
                 display: 'flex',
                 fontSize: isIpv6 ? 50 : 100,
