@@ -11,10 +11,7 @@ Cloudflare MyIP 查詢我現在的公網IP
 另外提供的「現在時間」是以Cloudflare伺服器的時間為準，方便給你當作對時工具使用。
 
 ## 用法與預覽
-### 你目前的IP是(即時Demo)：
-![myip](https://myip.yuaner.tw/ip.png)
-
-### 也可用以下方式直接取得
+### 可用在終端機用以下方式直接取得
 ```sh
 curl -s https://myip.yuaner.tw | jq
 curl -s "https://myip.yuaner.tw/ip.png" | magick - SIXEL:-
@@ -30,7 +27,13 @@ curl https://myip.yuaner.tw/utc
 * 本站網址：<https://myip.yuaner.tw/now>
 * 本站網址：<https://myip.yuaner.tw/utc>
 
-## 特色
+### 也可以直接抓取圖片：
+![myip](https://myip.yuaner.tw/ip.png)
+圖片下載點： <https://myip.yuaner.tw/ip.png>
+
+PS. 本預覽圖因為有進Github CDN快取，所以在本頁面上看到的資訊很可能是Github CDN環境的IP地址，不是你真正的公網IP。請以實際用 <https://myip.yuaner.tw/ip.png> 直連取得到的為主。
+
+## 本專案特色
 -   **雙棧支援**：完整支援 IPv4 與 IPv6 檢測。
 -   **提供地理資訊**：提供包括 ISP、ASN、國家、城市、大洲、時區等詳細數據。
 -   **動態地圖背景**：根據使用者目前位置即時呈現地圖背景（採用 Yandex Maps）。
@@ -41,7 +44,12 @@ curl https://myip.yuaner.tw/utc
     -   **純文字**：適合 `curl` 等 CLI 工具使用的簡潔輸出。
     -   **png圖片輸出**：已整合`@cf-wasm/og`可直接由後端產出png圖片
 -   **時間服務**：提供以Cloudflare為主的本地時區與UTC時區。
+
+### 技術特色
 -   **Cloudflare 原生**：針對 Cloudflare Workers 優化，確保高效能與安全性。
+-   **100%由後端渲染**：本站沒有使用React等複雜的CSR技術，完全由後端直接輸出純淨的 HTML 結構，確保客戶端擁有最大的相容性與效能，甚至在完全關閉 JavaScript 的極端環境下，依然能提供最核心、完整的基礎功能。
+-   **字體壓縮**：本站採用[justfont open 粉圓](https://justfont.com/huninn/)字體，但有做子集化壓縮處理，在保證使用者能看到我指定的字體樣式以外，也不要讓使用者產生多餘無用的下載流量負擔，來保證效能。（字體設計也同樣適用於OG圖片產生）
+-   **OG圖片產生**：本專案採用Cloudflare可直接由`vercel/og`動態生成圖片，而且有做效能考量，預先把已經畫好的背景與外框存成圖片，og僅處理壓上文字，不做外框漸層的渲染，來保證效能。
 
 ## 部署方式
 
