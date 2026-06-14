@@ -13,9 +13,9 @@ const nodeApp = new Hono<{ Bindings: Bindings; Variables: Variables }>();
 
 nodeApp.use("*", async (c, next) => {
   const url = new URL(c.req.url);
-  
+
   // Get IP from headers (behind proxy case) or socket
-  // Note: getConnInfo helper from hono/adapter/node-server is better usage if available, 
+  // Note: getConnInfo helper from hono/adapter/node-server is better usage if available,
   // currently simplified to headers or manual check.
   const forwarded = c.req.header("x-forwarded-for");
   const ip = forwarded ? forwarded.split(",")[0].trim() : "127.0.0.1"; // simplified fallback

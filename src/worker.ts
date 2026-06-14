@@ -13,17 +13,17 @@ worker.use("*", async (c, next) => {
   const geo: GeoData = {
     ip: (cf?.ip as string) || c.req.header("CF-Connecting-IP") || c.req.header("x-real-ip") || "",
     hostname: url.hostname,
-    
+
     // CF 資訊
     colo: cf?.colo as string,
-    country: cf?.country as string, 
+    country: cf?.country as string,
     city: cf?.city as string,
     continent: cf?.continent as string,
     longitude: cf?.longitude as string,
     latitude: cf?.latitude as string,
     asn: cf?.asn as number,
     asOrganization: cf?.asOrganization as string,
-    isEUCountry: cf?.isEUCountry as boolean | undefined, 
+    isEUCountry: cf?.isEUCountry as boolean | undefined,
     postalCode: cf?.postalCode as string,
     metroCode: cf?.metroCode as string,
     region: cf?.region as string,

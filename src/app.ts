@@ -10,9 +10,9 @@ vercelApp.use("*", async (c, next) => {
   // Vercel Headers for GeoIP
   // https://vercel.com/docs/edge-network/headers#x-vercel-ip-country
   const geo: GeoData = {
-    ip: c.req.header("x-forwarded-for") || c.req.header("x-real-ip") || "", 
+    ip: c.req.header("x-forwarded-for") || c.req.header("x-real-ip") || "",
     hostname: c.req.header("host") || "",
-    
+
     country: c.req.header("x-vercel-ip-country"),
     regionCode: c.req.header("x-vercel-ip-country-region"),
     city: c.req.header("x-vercel-ip-city"),

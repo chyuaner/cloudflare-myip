@@ -18,16 +18,16 @@ function collectTextFromFiles(): string {
     path.join(ROOT, 'src/core/app.ts'),
     path.join(ROOT, 'src/core/og.tsx'),
   ];
-  
+
   // 基礎字集：英數字、常用符號
   let allText = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!"#$%&\'()*+,-./:;<=>?@[\\]^_`{|}~ ';
-  
+
   for (const file of sourceFiles) {
     if (fs.existsSync(file)) {
       allText += fs.readFileSync(file, 'utf-8');
     }
   }
-  
+
   // 移除重複字元並過濾掉控制字元與程式碼保留字（非必要，但能精簡字串）
   return Array.from(new Set(allText.split(''))).join('');
 }
@@ -65,12 +65,12 @@ function pngToIcoBuffer(pngBuffer: Buffer): Buffer {
 async function run() {
   const results: Record<string, string> = {};
   const subsetText = collectTextFromFiles();
-  
+
   console.log(`🔍 Scanning source files... Found ${subsetText.length} unique characters.`);
 
   for (const asset of ASSET_CONFIG) {
     const fullPath = path.join(ROOT, asset.path);
-    
+
     if (!fs.existsSync(fullPath)) {
       console.warn(`⚠️ Warning: Source file not found: ${fullPath}`);
       continue;
@@ -84,7 +84,7 @@ async function run() {
       try {
         const woff2Buffer = Buffer.from(await subsetFont(buffer, subsetText, { targetFormat: 'woff2' }));
         results[`${asset.key}_woff2`] = woff2Buffer.toString('base64');
-        
+
         const ttfBuffer = Buffer.from(await subsetFont(buffer, subsetText, { targetFormat: 'sfnt' }));
         results[`${asset.key}_ttf`] = ttfBuffer.toString('base64');
       } catch (err) {
@@ -102,7 +102,7 @@ async function run() {
     }
   }
 
-  const content = `/** 
+  const content = `/**
  * 此檔案為自動產生，請勿手動修改。
  * 執行 npm run build:assets 更新。
  */
